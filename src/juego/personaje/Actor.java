@@ -47,6 +47,7 @@ public abstract class Actor implements Dibujable, Tickable {
             case ABA -> nuevaY = posicion.getY() + 1;
             case IZD -> nuevaX = posicion.getX() - 1;
             case DCH -> nuevaX = posicion.getX() + 1;
+            case Q -> throw new SalirDelJuegoException();
         }
 
         if (coordinador.esPared(nuevaX, nuevaY)) {

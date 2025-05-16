@@ -6,7 +6,7 @@ import multimedia.*;
 import java.awt.*;
 
 public class Principal {
-    private static final int MILLIS = 200;
+    private static final int MILLIS = 100;
 
     public static void espera(int milisegundos) {
         try {

@@ -17,10 +17,6 @@ public class Mapa implements Dibujable {
         setLienzo(lienzo);
     }
 
-    public void setLaberinto(char[][] mapa) {
-        laberinto = mapa;
-    }
-
     public void setLienzo(Lienzo lienzo) {
         this.lienzo = lienzo;
     }

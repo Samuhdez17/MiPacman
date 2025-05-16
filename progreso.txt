@@ -1,0 +1,11 @@
+añadir animación a pacman
+
+añadir un tercer fantasma que sepa la posición de pacman e intente ir a por el
+
+intentar algo con los puntos: que se cambie de mapa (añadir uno o 2) y que cuando te comas todas las monedas "pases de nivel",
+la complejidad puede ser de un segundo mapa mas cerrado para que sea mas difícil el movimiento con un fantasma que sepa la posición de pacman
+y otro en el que hayan 2 fantasmas que sepan la posición de pacman.
+
+- hacer una clase que cree a los personajes y el mapa y se le pasa a coordinador *HECHO*
+
+intentar medir el tiempo, para que cuando pase mucho rato spawnear un objeto que te permita comer fantasmas y que estos aparezcan al rato. (bastante complicado pero lo miraré)
