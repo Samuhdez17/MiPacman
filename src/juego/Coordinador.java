@@ -1,8 +1,6 @@
 package juego;
 
 import juego.excepciones.ErrorCargarImagen;
-import juego.excepciones.PacmanComidoException;
-import juego.excepciones.SalirDelJuegoException;
 import juego.personaje.*;
 import multimedia.*;
 
