@@ -2,7 +2,7 @@ package juego.personaje;
 
 import juego.Coordinador;
 import juego.excepciones.MovimientoInvalidoException;
-import juego.excepciones.PacmanComidoException;
+import juego.excepciones.SalirDelJuegoException;
 import multimedia.Lienzo;
 
 
@@ -13,20 +13,11 @@ public class FantasmaComun extends Fantasma {
         super(lienzo, coordinador, numFantasma == 1 ? IMAGENES[0] : IMAGENES[1]);
     }
 
-    public void tick() {
-        if (this.posicion.equals(pacman.getPosicion())) throw new PacmanComidoException("¡Pacman ha sido comido!");
-
-        boolean movido = false;
-
-        while (!movido) {
-            try {
-                Direccion dir = Direccion.values()[random.nextInt(4)];
-                mover(dir);
-                movido = true;
-            } catch (MovimientoInvalidoException ignored) {
-            }
+    public void tick() throws SalirDelJuegoException {
+        try {
+            Direccion dir = Direccion.values()[random.nextInt(4)];
+            mover(dir);
+        } catch (MovimientoInvalidoException ignored) {
         }
-
-        if (this.posicion.equals(pacman.getPosicion())) throw new PacmanComidoException("¡Pacman ha sido comido!"); //TODO para coordinador
     }
 }

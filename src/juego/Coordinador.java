@@ -1,103 +1,155 @@
 package juego;
 
-import juego.excepciones.ErrorCargarImagen;
+import juego.excepciones.ErrorCargarMapaException;
 import juego.personaje.*;
-import multimedia.*;
+import multimedia.Lienzo;
+import multimedia.Teclado;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Scanner;
 
-
-public class Coordinador implements Dibujable {
+public class Coordinador {
+    private BufferedReader lectura;
+    private Scanner entrada;
+    
     private Lienzo lienzo;
-    private Teclado teclado;
+    private final Teclado teclado;
 
-    private EstadoJuego estado;
-    private Mapa mapa;
-
+    private final int nivelActual;
+    private final Mapa mapa;
     private Pacman pacman;
-    private ArrayList<Fantasma> fantasmas;
+    private final ArrayList<Fantasma> fantasmas = new ArrayList<>();
 
-    public Coordinador(Nivel nivel, Lienzo lienzo, Teclado teclado) {
+    public Coordinador(int nivel, Lienzo lienzo, Teclado teclado) {
         setLienzo(lienzo);
-        estado = new EstadoJuego(lienzo);
         this.teclado = teclado;
 
-        this.mapa = new Mapa(lienzo);
-        mapa.setLaberinto(nivel.getMapa());
+        nivelActual = nivel;
+        mapa = new Mapa(lienzo);
 
-        situarActores(nivel.getNivelActual());
-        asignarSprites(nivel.getNivelActual());
-        mapa.generarPuntos();
+        crearLaberinto(nivelActual);
+        cerrarLectores();
     }
 
-    private void situarActores(int nivel) {
-        switch (nivel) {
-            case 1 -> {
-                pacman = new Pacman(lienzo, teclado,this, new Posicion(6, 7));
-
-                for (int i = 1 ; i <= 3 ; i++) {
-                    fantasmas.add(new FantasmaComun(lienzo, this, i));
-                }
-            }
-
-            case 2 -> {
-                pacman = new Pacman(lienzo, teclado,this, new Posicion(6, 7));
-
-                for (int i = 1 ; i <= 3 ; i++) {
-                    if (i == 3) fantasmas.add(new FantasmaListo());
-
-                    fantasmas.add(new FantasmaComun(lienzo, this, i));
-                }
-            }
-
-            case 3 -> {
-                pacman = new Pacman(lienzo, teclado,this, new Posicion(6, 7));
-
-                for (int i = 1 ; i <= 3 ; i++) {
-                    if (i > 1) new FantasmaListo();
-
-                    fantasmas.add(new FantasmaComun(lienzo, this, i));
-                }
-            }
-        }
+    public Lienzo getLienzo() {
+        return lienzo;
     }
 
-    private void asignarSprites(int numMapa) {
+    public Mapa getMapa() {
+        return mapa;
+    }
+
+    public Pacman getPacman() {
+        return pacman;
+    }
+
+    public ArrayList<Fantasma> getFantasmas() {
+        return fantasmas;
+    }
+
+    public int getNivelActual() {
+        return nivelActual;
+    }
+
+    public int mapaGetLimiteX(){
+        return mapa.getLimiteX();
+    }
+
+    public int mapaGetLimiteY(){
+        return mapa.getLimiteY();
+    }
+
+    public void setLienzo(Lienzo lienzo) {
+        this.lienzo = lienzo;
+    }
+
+    private void crearLaberinto(int nivel) {
+        leerLaberinto(nivel);
+
+        cargarLaberinto();
+        situarPersonajes(nivel);
+    }
+
+    private void leerLaberinto(int numMapa) {
         switch (numMapa) {
             case 1 -> {
                 try {
-                    mapa.setSuelo(Color.BLACK);
-                    mapa.setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa1/muro.png")));
-                    mapa.setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa1/moneda.png")));
-
-                } catch (IOException e){
-                    throw new ErrorCargarImagen("No se puede cargar la imagen: " + e);
+                    lectura = new BufferedReader(new FileReader("src/assets/mapas/mapa1/patron.txt"));
+                    entrada = new Scanner(lectura);
+                } catch (IOException e) {
+                    throw new ErrorCargarMapaException(e);
                 }
             }
 
             case 2 -> {
                 try {
-                    mapa.setSuelo(Color.BLACK);
-                    mapa.setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa2/muro.png")));
-                    mapa.setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa2/moneda.png")));
-
-                } catch (IOException e){
-                    throw new ErrorCargarImagen("No se puede cargar la imagen: " + e);
+                    lectura = new BufferedReader(new FileReader("src/assets/mapas/mapa2/patron.txt"));
+                    entrada = new Scanner(lectura);
+                } catch (IOException e) {
+                    throw new ErrorCargarMapaException(e);
                 }
             }
 
             case 3 -> {
                 try {
-                    mapa.setSuelo(Color.BLACK);
-                    mapa.setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa3/muro.png")));
-                    mapa.setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa3/moneda.png")));
+                    lectura = new BufferedReader(new FileReader("src/assets/mapas/mapa3/patron.txt"));
+                    entrada = new Scanner(lectura);
+                } catch (IOException e) {
+                    throw new ErrorCargarMapaException(e);
+                }
+            }
 
-                } catch (IOException e){
-                    throw new ErrorCargarImagen("No se puede cargar la imagen: " + e);
+        }
+    }
+
+    private void cargarLaberinto() {
+        String linea;
+        int fila = 0;
+
+        while (entrada.hasNextLine()) {
+            linea = entrada.nextLine();
+
+            char[] filaMapa = linea.toCharArray();
+
+            for (int col = 0; col < filaMapa.length; col++) {
+                mapa.setContenidoMapa(col, fila, filaMapa[col]);
+            }
+
+            fila++;
+        }
+    }
+
+    private void situarPersonajes(int nivel) {
+        switch (nivel) {
+            case 1 -> {
+                pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
+
+                for (int i = 1 ; i <= 3 ; i++) {
+                    fantasmas.add(new FantasmaComun(lienzo, this, i));
+                }
+            }
+
+            case 2 -> {
+                pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
+
+                for (int i = 1 ; i <= 3 ; i++) {
+                    if (i == 3) fantasmas.add(new FantasmaListo(lienzo, this, pacman));
+
+                    fantasmas.add(new FantasmaComun(lienzo, this, i));
+                }
+            }
+
+            case 3 -> {
+                pacman = new Pacman(lienzo, teclado,this, new Posicion(6, 7));
+
+                for (int i = 1 ; i <= 3 ; i++) {
+                    if (i == 3) fantasmas.add(new FantasmaComun(lienzo, this, i));
+
+                    fantasmas.add(new FantasmaListo(lienzo, this, pacman));
                 }
             }
         }
@@ -115,39 +167,25 @@ public class Coordinador implements Dibujable {
         return true;
     }
 
-    public boolean esPared(Posicion posicion) {
-        return mapa.esPared(posicion);
+    public boolean esPared(int x, int y) {
+        return mapa.esPared(y, x);
     }
 
-    public void tick() {
-        pacman.tick();
-
-        if (mapa.hayPunto(pacman.getPosicion())) {
-            estado.incrementarPuntuacion();
-            mapa.retirarPunto(pacman.getPosicion());
-        }
-
+    public boolean esFantasma(Posicion posicion) {
         for (Fantasma fantasma : fantasmas) {
-            fantasma.tick();
-        }
-    }
-
-    public void setLienzo(Lienzo lienzo) {
-        this.lienzo = lienzo;
-    }
-
-    public void dibujar() {
-        lienzo.limpiar();
-
-        mapa.dibujar();
-        pacman.dibujar();
-
-        for (Fantasma fantasma : fantasmas) {
-            fantasma.dibujar();
+            if (posicion.equals(fantasma.getPosicion())) return true;
         }
 
-        estado.dibujar();
+        return false;
+    }
 
-        lienzo.volcar();
+    private void cerrarLectores() {
+        try {
+            if (entrada != null) entrada.close();
+            if (lectura != null) lectura.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

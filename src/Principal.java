@@ -1,12 +1,12 @@
+import juego.Juego;
 import juego.Coordinador;
-import juego.Nivel;
 import juego.excepciones.PacmanComidoException;
 import juego.excepciones.SalirDelJuegoException;
 import multimedia.*;
 import java.awt.*;
 
 public class Principal {
-    private static final int MILLIS = 150;
+    private static final int MILLIS = 200;
 
     public static void espera(int milisegundos) {
         try {
@@ -22,25 +22,28 @@ public class Principal {
         Color colorFondo = Color.BLACK;
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
-        Nivel nivel = new Nivel(1);
-        Coordinador coordinador = new Coordinador(nivel, ventana, ventana.getTeclado());
+        Coordinador coordinador = new Coordinador(1, ventana, ventana.getTeclado());
+        Juego juego = new Juego(coordinador);
 
         try {
             while (true) {
-                coordinador.dibujar();
+                juego.dibujar();
 
                 ventana.getTeclado().tick();
-                coordinador.tick();
+                juego.tick();
 
                 espera(MILLIS);
             }
+
         } catch (PacmanComidoException e) {
             System.out.println("¡Game Over! Te han comido.");
+
         } catch (SalirDelJuegoException e) {
             System.out.println("Has elegido salir del juego.");
             System.exit(0);
+
         } finally {
-            coordinador.dibujar();
+            juego.dibujar();
         }
     }
 }

@@ -1,8 +1,9 @@
 package juego.personaje;
 
 import juego.Coordinador;
-import juego.excepciones.ErrorCargarImagen;
+import juego.excepciones.ErrorCargarImagenException;
 import juego.excepciones.MovimientoInvalidoException;
+import juego.excepciones.SalirDelJuegoException;
 import multimedia.*;
 
 import javax.imageio.ImageIO;
@@ -10,7 +11,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public abstract class Actor implements Dibujable {
+public abstract class Actor implements Dibujable, Tickable {
     private Lienzo lienzo;
     protected Image imagen;
 
@@ -29,7 +30,7 @@ public abstract class Actor implements Dibujable {
         try {
             imagen = ImageIO.read(new File("src/assets/" + nombreFicheroImagen));
         } catch (IOException e) {
-            throw new ErrorCargarImagen(e);
+            throw new ErrorCargarImagenException(e);
         }
     }
 
@@ -37,36 +38,28 @@ public abstract class Actor implements Dibujable {
         return posicion;
     }
 
-    public Posicion getPosicionActual() {
-        return posicion;
-    }
-
-    public void mover(Direccion dir) throws MovimientoInvalidoException {
-        Posicion destino = desplazar(dir);
-
-        if (destino.equals(this.posicion)) throw new MovimientoInvalidoException("Movimiento no válido.");
-
-        if (coordinador.esPared(destino)) {
-            if (this instanceof Fantasma) this.tick();
-        }
-        this.posicion = destino;
-    }
-
-    public Posicion desplazar(Direccion dir) {
-        int nuevaX = posicion.getX();
+    public void mover(Direccion dir) throws MovimientoInvalidoException, SalirDelJuegoException {
+        int nuevaX = posicion.getX();;
         int nuevaY = posicion.getY();
 
         switch (dir) {
-            case ARR -> posicion.setY(nuevaY - 1);
-            case ABA -> posicion.setY(nuevaY + 1);
-            case IZD -> posicion.setX(nuevaX - 1);
-            case DCH -> posicion.setX(nuevaX + 1);
-            default -> {
-                return posicion;
-            }
+            case ARR -> nuevaY = posicion.getY() - 1;
+            case ABA -> nuevaY = posicion.getY() + 1;
+            case IZD -> nuevaX = posicion.getX() - 1;
+            case DCH -> nuevaX = posicion.getX() + 1;
         }
 
-        return new Posicion(nuevaX, nuevaY);
+        if (coordinador.esPared(nuevaX, nuevaY)) {
+            if (this instanceof Pacman) System.out.println("Chocaste con una pared!");
+            else this.tick();
+
+        } else if (this instanceof Fantasma && coordinador.esFantasma(new Posicion(nuevaX, nuevaY))) {
+            this.tick();
+
+        } else {
+            posicion.setX(nuevaX);
+            posicion.setY(nuevaY);
+        }
     }
 
     public void setLienzo(Lienzo lienzo) {
@@ -76,6 +69,4 @@ public abstract class Actor implements Dibujable {
     public void dibujar() {
         lienzo.dibujarImagen(posicion.getX(), posicion.getY(), imagen);
     }
-
-    public abstract void tick();
 }

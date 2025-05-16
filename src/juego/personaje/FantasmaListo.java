@@ -2,7 +2,7 @@ package juego.personaje;
 
 import juego.Coordinador;
 import juego.excepciones.MovimientoInvalidoException;
-import juego.excepciones.PacmanComidoException;
+import juego.excepciones.SalirDelJuegoException;
 import multimedia.Lienzo;
 
 public class FantasmaListo extends Fantasma {
@@ -15,20 +15,13 @@ public class FantasmaListo extends Fantasma {
         this.pacman = pacman;
     }
 
-    public void tick() throws PacmanComidoException {
-        if (this.posicion.equals(pacman.getPosicion())) throw new PacmanComidoException("¡Pacman ha sido comido!");
+    public void tick() throws SalirDelJuegoException {
+        try {
+            Posicion posPacman = pacman.getPosicion();
 
-        boolean movido = false;
-
-        while (!movido) {
-            try {
-                Direccion dir = Direccion.values()[random.nextInt(4)];
-                mover(dir);
-                movido = true;
-            } catch (MovimientoInvalidoException ignored) {
-            }
+            Direccion dir = Direccion.values()[random.nextInt(4)];
+            mover(dir);
+        } catch (MovimientoInvalidoException ignored) {
         }
-
-        if (this.posicion.equals(pacman.getPosicion())) throw new PacmanComidoException("¡Pacman ha sido comido!"); //TODO para coordinador
     }
 }

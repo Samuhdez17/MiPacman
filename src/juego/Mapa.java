@@ -33,6 +33,13 @@ public class Mapa implements Dibujable {
         return laberinto.length;
     }
 
+    public int getLimiteX(){
+        return getAncho() - 1;
+    }
+    public int getLimiteY(){
+        return getAlto() - 1;
+    }
+
     // Estos get y set son para "traducir" el sistema de coordenadas x, y que se utiliza
     // a lo largo de todo el programa, al sistema de coordenadas de filas y columnas
     // que se utiliza en la matriz de chars.
@@ -68,6 +75,10 @@ public class Mapa implements Dibujable {
         return x >= 0 && x < laberinto.length && y >= 0 && y < laberinto[0].length && getContenidoMapa(x, y) != '#';
     }
 
+    public boolean esPared(int x, int y) {
+        return getContenidoMapa(y, x) == '#';
+    }
+
     public void generarPuntos() {
         for (int x = 0; x < laberinto.length; x++) {
             for (int y = 0; y < laberinto[0].length; y++) {
@@ -93,9 +104,5 @@ public class Mapa implements Dibujable {
                 else if (getContenidoMapa(x, y) == '·') lienzo.dibujarImagen(x, y, imagenMoneda);
             }
         }
-    }
-
-    public boolean esPared(Posicion posicion) {
-        return getContenidoMapa(posicion) == '#';
     }
 }

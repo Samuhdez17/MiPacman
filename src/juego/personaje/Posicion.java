@@ -15,11 +15,6 @@ public class Posicion {
         this.y = y;
     }
 
-    public Posicion(Mapa mapa) {
-        this.x = random.nextInt(mapa.getAncho());
-        this.y = random.nextInt(mapa.getAlto());
-    }
-
     public int getX() {
         return x;
     }
@@ -36,16 +31,11 @@ public class Posicion {
         this.y = y;
     }
 
-    public boolean equals(Posicion otra) {
-        return this.x == otra.x && this.y == otra.y;
-    }
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Posicion)) return false;
+        Posicion otra = (Posicion) obj;
 
-    public Posicion desplazar(Direccion dir) {
-        return switch (dir) {
-            case ARR -> new Posicion(x  , y-1);
-            case ABA -> new Posicion(x  , y+1);
-            case IZD -> new Posicion(x-1, y  );
-            case DCH -> new Posicion(x+1, y  );
-        };
+        return this.x == otra.x && this.y == otra.y;
     }
 }
