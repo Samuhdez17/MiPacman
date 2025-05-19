@@ -1,9 +1,13 @@
 package juego;
 
+import juego.excepciones.ErrorCargarImagenException;
 import juego.personaje.Posicion;
 import multimedia.*;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Mapa implements Dibujable {
     private int puntosEnMapa = 0;
@@ -60,14 +64,51 @@ public class Mapa implements Dibujable {
         laberinto[posicion.getY()][posicion.getX()] = c;
     }
 
-    public void setImagenMoneda(Image imagenMoneda) {
+    private void setImagenMoneda(Image imagenMoneda) {
         this.imagenMoneda = imagenMoneda;
     }
-    public void setImagenMuro(Image imagenMuro) {
+    private void setImagenMuro(Image imagenMuro) {
         this.imagenMuro = imagenMuro;
     }
-    public void setSuelo(Color suelo) {
+    private void setSuelo(Color suelo) {
         this.suelo = suelo;
+    }
+
+    public void asignarSprites(int numMapa) {
+        switch (numMapa) {
+            case 1 -> {
+                try {
+                    setSuelo(Color.BLACK);
+                    setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa1/muro.png")));
+                    setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa1/moneda.png")));
+
+                } catch (IOException e){
+                    throw new ErrorCargarImagenException(e);
+                }
+            }
+
+            case 2 -> {
+                try {
+                    setSuelo(Color.GREEN);
+                    setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa2/muro.png")));
+                    setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa2/moneda.png")));
+
+                } catch (IOException e){
+                    throw new ErrorCargarImagenException(e);
+                }
+            }
+
+            case 3 -> {
+                try {
+                    setSuelo(Color.RED);
+                    setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa3/muro.png")));
+                    setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa3/moneda.png")));
+
+                } catch (IOException e){
+                    throw new ErrorCargarImagenException(e);
+                }
+            }
+        }
     }
 
     public boolean esTransitable(Posicion posicion) {

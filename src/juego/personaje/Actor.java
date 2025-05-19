@@ -1,6 +1,6 @@
 package juego.personaje;
 
-import juego.Coordinador;
+import juego.Nivel;
 import juego.excepciones.ErrorCargarImagenException;
 import juego.excepciones.MovimientoInvalidoException;
 import juego.excepciones.SalirDelJuegoException;
@@ -16,11 +16,11 @@ public abstract class Actor implements Dibujable, Tickable {
     protected Image imagen;
 
     protected Posicion posicion;
-    protected Coordinador coordinador;
+    protected Nivel nivel;
 
-    public Actor(String nombreFicheroImagen, Lienzo lienzo, Coordinador coordinador, Posicion posicionInicial) {
+    public Actor(String nombreFicheroImagen, Lienzo lienzo, Nivel nivel, Posicion posicionInicial) {
         this.posicion = posicionInicial;
-        this.coordinador = coordinador;
+        this.nivel = nivel;
 
         setLienzo(lienzo);
         setImagen(nombreFicheroImagen);
@@ -50,11 +50,11 @@ public abstract class Actor implements Dibujable, Tickable {
             case Q -> throw new SalirDelJuegoException();
         }
 
-        if (coordinador.esPared(nuevaX, nuevaY)) {
+        if (nivel.esPared(nuevaX, nuevaY)) {
             if (this instanceof Pacman) System.out.println("Chocaste con una pared!");
             else this.tick();
 
-        } else if (this instanceof Fantasma && coordinador.esFantasma(new Posicion(nuevaX, nuevaY))) {
+        } else if (this instanceof Fantasma && nivel.esFantasma(new Posicion(nuevaX, nuevaY))) {
             this.tick();
 
         } else {

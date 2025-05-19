@@ -1,85 +1,58 @@
 package juego;
 
 import juego.excepciones.ErrorCargarMapaException;
+import juego.excepciones.PacmanComidoException;
+import juego.excepciones.SalirDelJuegoException;
 import juego.personaje.*;
-import multimedia.Lienzo;
-import multimedia.Teclado;
-
-import java.io.IOException;
+import multimedia.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Coordinador {
-    private BufferedReader lectura;
-    private Scanner entrada;
-    
+
+public class Nivel implements Dibujable {
     private Lienzo lienzo;
     private final Teclado teclado;
 
-    private final int nivelActual;
-    private final Mapa mapa;
-    private Pacman pacman;
-    private final ArrayList<Fantasma> fantasmas = new ArrayList<>();
+    private BufferedReader lecturaPatronMapa;
+    private Scanner entrada;
 
-    public Coordinador(int nivel, Lienzo lienzo, Teclado teclado) {
+    private final EstadoJuego estado;
+    private Mapa mapa;
+
+    private Pacman pacman;
+    private ArrayList<Fantasma> fantasmas;
+
+    public Nivel(Lienzo lienzo, Teclado teclado, int nivel) {
         setLienzo(lienzo);
         this.teclado = teclado;
 
-        nivelActual = nivel;
-        mapa = new Mapa(lienzo);
+        estado = new EstadoJuego(lienzo);
 
-        crearLaberinto(nivelActual);
-        cerrarLectores();
-    }
-
-    public Lienzo getLienzo() {
-        return lienzo;
-    }
-
-    public Mapa getMapa() {
-        return mapa;
-    }
-
-    public Pacman getPacman() {
-        return pacman;
-    }
-
-    public ArrayList<Fantasma> getFantasmas() {
-        return fantasmas;
-    }
-
-    public int getNivelActual() {
-        return nivelActual;
-    }
-
-    public int mapaGetLimiteX(){
-        return mapa.getLimiteX();
-    } // |
-                                                              //  > estos se usaban para la posición random de fantasma
-    public int mapaGetLimiteY(){
-        return mapa.getLimiteY();
-    } // |
-
-    public void setLienzo(Lienzo lienzo) {
-        this.lienzo = lienzo;
+        crearLaberinto(nivel);
     }
 
     private void crearLaberinto(int nivel) {
+        mapa = new Mapa(lienzo);
         leerLaberinto(nivel);
 
         cargarLaberinto();
+        mapa.asignarSprites(nivel);
+
         situarPersonajes(nivel);
+
+        cerrarLectores();
     }
 
     private void leerLaberinto(int numMapa) {
         switch (numMapa) {
             case 1 -> {
                 try {
-                    lectura = new BufferedReader(new FileReader("src/assets/mapas/mapa1/patron.txt"));
-                    entrada = new Scanner(lectura);
+                    lecturaPatronMapa = new BufferedReader(new FileReader("src/assets/mapas/mapa1/patron.txt"));
+                    entrada = new Scanner(lecturaPatronMapa);
                 } catch (IOException e) {
                     throw new ErrorCargarMapaException(e);
                 }
@@ -87,8 +60,8 @@ public class Coordinador {
 
             case 2 -> {
                 try {
-                    lectura = new BufferedReader(new FileReader("src/assets/mapas/mapa2/patron.txt"));
-                    entrada = new Scanner(lectura);
+                    lecturaPatronMapa = new BufferedReader(new FileReader("src/assets/mapas/mapa2/patron.txt"));
+                    entrada = new Scanner(lecturaPatronMapa);
                 } catch (IOException e) {
                     throw new ErrorCargarMapaException(e);
                 }
@@ -96,8 +69,8 @@ public class Coordinador {
 
             case 3 -> {
                 try {
-                    lectura = new BufferedReader(new FileReader("src/assets/mapas/mapa3/patron.txt"));
-                    entrada = new Scanner(lectura);
+                    lecturaPatronMapa = new BufferedReader(new FileReader("src/assets/mapas/mapa3/patron.txt"));
+                    entrada = new Scanner(lecturaPatronMapa);
                 } catch (IOException e) {
                     throw new ErrorCargarMapaException(e);
                 }
@@ -155,6 +128,16 @@ public class Coordinador {
         }
     }
 
+    private void cerrarLectores() {
+        try {
+            if (entrada != null) entrada.close();
+            if (lecturaPatronMapa != null) lecturaPatronMapa.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean estaLibre(Posicion posicion) {
         if (!mapa.esTransitable(posicion)) return false;
 
@@ -179,13 +162,48 @@ public class Coordinador {
         return false;
     }
 
-    private void cerrarLectores() {
-        try {
-            if (entrada != null) entrada.close();
-            if (lectura != null) lectura.close();
+    public boolean comioTodosLosPuntos() {
+        return estado.pacmanComioTodo();
+    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void tick() throws PacmanComidoException, SalirDelJuegoException {
+        pacman.tick();
+
+        if (mapa.hayPunto(pacman.getPosicion())) {
+            estado.incrementarPuntuacion();
+            mapa.retirarPunto(pacman.getPosicion());
         }
+
+        for (Fantasma fantasma : fantasmas) {
+            if (verificarIntercambio(fantasma)) throw new PacmanComidoException("¡Pacman ha sido comido!");
+
+            fantasma.tick();
+
+            if (verificarIntercambio(fantasma)) throw new PacmanComidoException("¡Pacman ha sido comido!");
+        }
+    }
+
+    public boolean verificarIntercambio(Fantasma fantasma) {
+        return fantasma.getPosicion().equals(pacman.getPosicion());
+    }
+
+    @Override
+    public void setLienzo(Lienzo lienzo) {
+        this.lienzo = lienzo;
+    }
+
+    public void dibujar() {
+        lienzo.limpiar();
+
+        mapa.dibujar();
+        pacman.dibujar();
+
+        for (Fantasma fantasma : fantasmas) {
+            fantasma.dibujar();
+        }
+
+        estado.dibujar();
+
+        lienzo.volcar();
     }
 }

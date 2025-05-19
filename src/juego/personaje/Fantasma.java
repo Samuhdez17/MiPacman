@@ -1,6 +1,6 @@
 package juego.personaje;
 
-import juego.Coordinador;
+import juego.Nivel;
 import multimedia.*;
 
 import java.util.Random;
@@ -10,8 +10,8 @@ public abstract class Fantasma extends Actor {
     private static final Posicion[] SPAWNS = {new Posicion(1,1), new Posicion(1,13), new Posicion(13,1)};
     private static final boolean[] SPAWNS_OCUPADOS = new boolean[SPAWNS.length];
 
-    public Fantasma(Lienzo lienzo, Coordinador coordinador, String imagen) {
-        super(imagen, lienzo, coordinador, new Posicion(0,0));
+    public Fantasma(Lienzo lienzo, Nivel nivel, String imagen) {
+        super(imagen, lienzo, nivel, new Posicion(0,0));
         posicion = SPAWNS[generarPosicion()];
     }
 

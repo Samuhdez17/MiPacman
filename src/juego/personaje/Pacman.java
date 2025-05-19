@@ -9,8 +9,8 @@ import java.awt.event.KeyEvent;
 public class Pacman extends Actor {
     private Teclado teclado;
 
-    public Pacman(Lienzo lienzo, Teclado teclado, Coordinador coordinador, Posicion posicionInicial) {
-        super("pacman-abierto.png", lienzo, coordinador, posicionInicial);
+    public Pacman(Lienzo lienzo, Teclado teclado, Nivel nivel, Posicion posicionInicial) {
+        super("pacman-abierto.png", lienzo, nivel, posicionInicial);
 
         this.teclado = teclado;
     }

@@ -1,6 +1,6 @@
 package juego.personaje;
 
-import juego.Coordinador;
+import juego.Nivel;
 import juego.excepciones.MovimientoInvalidoException;
 import juego.excepciones.SalirDelJuegoException;
 import multimedia.Lienzo;
@@ -9,8 +9,8 @@ import multimedia.Lienzo;
 public class FantasmaComun extends Fantasma {
     private static final String[] IMAGENES = {"fantasma-comun1.png", "fantasma-comun2.png"};
 
-    public FantasmaComun(Lienzo lienzo, Coordinador coordinador, int numFantasma) {
-        super(lienzo, coordinador, numFantasma == 1 ? IMAGENES[0] : IMAGENES[1]);
+    public FantasmaComun(Lienzo lienzo, Nivel nivel, int numFantasma) {
+        super(lienzo, nivel, numFantasma == 1 ? IMAGENES[0] : IMAGENES[1]);
     }
 
     public void tick() throws SalirDelJuegoException {
