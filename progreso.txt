@@ -1,4 +1,4 @@
-añadir animación a pacman
+añadir animación a pacman *HECHO*
 
 añadir un tercer fantasma que sepa la posición de pacman e intente ir a por el
 

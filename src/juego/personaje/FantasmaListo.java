@@ -7,18 +7,16 @@ import multimedia.Lienzo;
 
 public class FantasmaListo extends Fantasma {
     private static final String IMAGEN = "fantasma-listo.png";
-    private final Pacman pacman;
+    private final Posicion posPacman;
 
     public FantasmaListo(Lienzo lienzo, Nivel nivel, Pacman pacman) {
         super(lienzo, nivel, IMAGEN);
 
-        this.pacman = pacman;
+        this.posPacman = pacman.getPosicion();
     }
 
     public void tick() throws SalirDelJuegoException {
         try {
-            Posicion posPacman = pacman.getPosicion();
-
             Direccion dir = Direccion.values()[random.nextInt(4)];
             mover(dir);
         } catch (MovimientoInvalidoException ignored) {

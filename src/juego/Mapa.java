@@ -12,8 +12,8 @@ import java.io.IOException;
 public class Mapa implements Dibujable {
     private int puntosEnMapa = 0;
 
-    private char[][] laberinto = new char[15][15];
-    private Color suelo;
+    private final char[][] laberinto = new char[15][15];
+    private Image imagenSuelo;
     private Image imagenMuro;
     private Image imagenMoneda;
 
@@ -35,7 +35,7 @@ public class Mapa implements Dibujable {
         return laberinto.length;
     }
 
-    public int getMaxPuntos() {
+    public int getPuntosMapa() {
         return puntosEnMapa;
     }
 
@@ -70,15 +70,15 @@ public class Mapa implements Dibujable {
     private void setImagenMuro(Image imagenMuro) {
         this.imagenMuro = imagenMuro;
     }
-    private void setSuelo(Color suelo) {
-        this.suelo = suelo;
+    private void setImagenSuelo(Image imagenSuelo) {
+        this.imagenSuelo = imagenSuelo;
     }
 
     public void asignarSprites(int numMapa) {
         switch (numMapa) {
             case 1 -> {
                 try {
-                    setSuelo(Color.BLACK);
+                    setImagenSuelo(ImageIO.read(new File("src/assets/mapas/mapa1/suelo.png")));
                     setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa1/muro.png")));
                     setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa1/moneda.png")));
 
@@ -89,7 +89,7 @@ public class Mapa implements Dibujable {
 
             case 2 -> {
                 try {
-                    setSuelo(Color.GREEN);
+                    setImagenSuelo(ImageIO.read(new File("src/assets/mapas/mapa2/suelo.png")));
                     setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa2/muro.png")));
                     setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa2/moneda.png")));
 
@@ -100,7 +100,7 @@ public class Mapa implements Dibujable {
 
             case 3 -> {
                 try {
-                    setSuelo(Color.RED);
+                    setImagenSuelo(ImageIO.read(new File("src/assets/mapas/mapa3/suelo.png")));
                     setImagenMuro(ImageIO.read(new File("src/assets/mapas/mapa3/muro.png")));
                     setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa3/moneda.png")));
 
@@ -109,17 +109,6 @@ public class Mapa implements Dibujable {
                 }
             }
         }
-    }
-
-    public boolean esTransitable(Posicion posicion) {
-        int x = posicion.getX();
-        int y = posicion.getY();
-
-        return x >= 0 && x < laberinto.length && y >= 0 && y < laberinto[0].length && getContenidoMapa(x, y) != '#';
-    }
-
-    public boolean esPared(int x, int y) {
-        return getContenidoMapa(y, x) == '#';
     }
 
     public void generarPuntos() {
@@ -133,19 +122,30 @@ public class Mapa implements Dibujable {
         }
     }
 
-    public boolean hayPunto(Posicion posicion) {
-        return getContenidoMapa(posicion) == '·';
-    }
-
     public void retirarPunto(Posicion posicion) {
         setContenidoMapa(posicion, ' ');
         puntosEnMapa--;
     }
 
+    public boolean esTransitable(Posicion posicion) {
+        int x = posicion.getX();
+        int y = posicion.getY();
+
+        return x >= 0 && x < laberinto.length && y >= 0 && y < laberinto[0].length && getContenidoMapa(x, y) != '#';
+    }
+
+    public boolean esPared(int x, int y) {
+        return getContenidoMapa(y, x) == '#';
+    }
+
+    public boolean hayPunto(Posicion posicion) {
+        return getContenidoMapa(posicion) == '·';
+    }
+
     public void dibujar() {
         for (int x = 0; x < getAncho(); x++) {
             for (int y = 0; y < getAlto(); y++) {
-                lienzo.marcarPixel(x, y, suelo);
+                lienzo.dibujarImagen(x, y, imagenSuelo);
 
                 if (getContenidoMapa(x, y) == '#') lienzo.dibujarImagen(x, y, imagenMuro);
                 else if (getContenidoMapa(x, y) == '·') lienzo.dibujarImagen(x, y, imagenMoneda);

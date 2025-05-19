@@ -1,9 +1,11 @@
 package juego.excepciones;
-public class PacmanComidoException extends Exception {
-    public PacmanComidoException(String msg) {
-        super(msg);
-    }
 
-    public PacmanComidoException() {
-    }
+public class PacmanComidoException extends RuntimeException {
+  public PacmanComidoException(String message) {
+    super(message);
+  }
+
+  public PacmanComidoException() {
+    super("¡Pacman ha sido comido!");
+  }
 }
