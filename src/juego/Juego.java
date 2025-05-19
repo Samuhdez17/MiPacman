@@ -23,12 +23,13 @@ public class Juego implements Dibujable {
     private final ArrayList<Fantasma> fantasmas;
 
     public Juego(Coordinador coordinador) {
-        estado = new EstadoJuego(coordinador.getLienzo());
         setLienzo(coordinador.getLienzo());
 
         pacman = coordinador.getPacman();
         fantasmas = coordinador.getFantasmas();
         mapa = coordinador.getMapa();
+
+        estado = new EstadoJuego(coordinador.getLienzo(), mapa.getMaxPuntos());
 
         asignarSprites(coordinador.getNivelActual());
         mapa.generarPuntos();
@@ -43,7 +44,7 @@ public class Juego implements Dibujable {
                     mapa.setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa1/moneda.png")));
 
                 } catch (IOException e){
-                    throw new ErrorCargarImagenException("No se puede cargar la imagen: " + e);
+                    throw new ErrorCargarImagenException(e);
                 }
             }
 
@@ -54,7 +55,7 @@ public class Juego implements Dibujable {
                     mapa.setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa2/moneda.png")));
 
                 } catch (IOException e){
-                    throw new ErrorCargarImagenException("No se puede cargar la imagen: " + e);
+                    throw new ErrorCargarImagenException(e);
                 }
             }
 
@@ -65,7 +66,7 @@ public class Juego implements Dibujable {
                     mapa.setImagenMoneda(ImageIO.read(new File("src/assets/mapas/mapa3/moneda.png")));
 
                 } catch (IOException e){
-                    throw new ErrorCargarImagenException("No se puede cargar la imagen: " + e);
+                    throw new ErrorCargarImagenException(e);
                 }
             }
         }
@@ -110,5 +111,9 @@ public class Juego implements Dibujable {
         estado.dibujar();
 
         lienzo.volcar();
+    }
+
+    public boolean comioTodosLosPuntos() {
+        return estado.pacmanComioTodo();
     }
 }

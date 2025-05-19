@@ -22,18 +22,19 @@ public class Principal {
         Color colorFondo = Color.BLACK;
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
-        Coordinador coordinador = new Coordinador(1, ventana, ventana.getTeclado());
-        Juego juego = new Juego(coordinador);
 
         try {
-            while (true) {
-                juego.dibujar();
+                Coordinador coordinador = new Coordinador(1, ventana, ventana.getTeclado());
+                Juego juego = new Juego(coordinador);
 
-                ventana.getTeclado().tick();
-                juego.tick();
+                while (true) {
+                    juego.dibujar();
 
-                espera(MILLIS);
-            }
+                    ventana.getTeclado().tick();
+                    juego.tick();
+
+                    espera(MILLIS);
+                }
 
         } catch (PacmanComidoException e) {
             System.out.println("¡Game Over! Te han comido.");
@@ -42,8 +43,6 @@ public class Principal {
             System.out.println("Has elegido salir del juego.");
             System.exit(0);
 
-        } finally {
-            juego.dibujar();
         }
     }
 }

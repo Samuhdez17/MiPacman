@@ -6,6 +6,8 @@ import multimedia.*;
 import java.awt.*;
 
 public class Mapa implements Dibujable {
+    private int puntosEnMapa = 0;
+
     private char[][] laberinto = new char[15][15];
     private Color suelo;
     private Image imagenMuro;
@@ -27,6 +29,10 @@ public class Mapa implements Dibujable {
 
     public int getAlto() {
         return laberinto.length;
+    }
+
+    public int getMaxPuntos() {
+        return puntosEnMapa;
     }
 
     public int getLimiteX(){
@@ -78,7 +84,10 @@ public class Mapa implements Dibujable {
     public void generarPuntos() {
         for (int x = 0; x < laberinto.length; x++) {
             for (int y = 0; y < laberinto[0].length; y++) {
-                if (getContenidoMapa(x, y) == ' ') setContenidoMapa(x, y, '·');
+                if (getContenidoMapa(x, y) == ' ') {
+                    setContenidoMapa(x, y, '·');
+                    puntosEnMapa++;
+                }
             }
         }
     }
@@ -89,6 +98,7 @@ public class Mapa implements Dibujable {
 
     public void retirarPunto(Posicion posicion) {
         setContenidoMapa(posicion, ' ');
+        puntosEnMapa--;
     }
 
     public void dibujar() {

@@ -6,15 +6,17 @@ import multimedia.Lienzo;
 import java.awt.*;
 
 public class EstadoJuego implements Dibujable {
+    private final int puntuacionMax;
     private int puntuacion;
     private Lienzo lienzo;
 
-    public EstadoJuego(Lienzo lienzo) {
+    public EstadoJuego(Lienzo lienzo, int puntuacionMax) {
         setLienzo(lienzo);
+        this.puntuacionMax = puntuacionMax;
     }
 
-    public int getPuntuacion() {
-        return puntuacion;
+    public boolean pacmanComioTodo() {
+        return puntuacion == puntuacionMax;
     }
 
     public void setPuntuacion(int puntuacion) {

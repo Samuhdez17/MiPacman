@@ -57,11 +57,11 @@ public class Coordinador {
 
     public int mapaGetLimiteX(){
         return mapa.getLimiteX();
-    }
-
+    } // |
+                                                              //  > estos se usaban para la posición random de fantasma
     public int mapaGetLimiteY(){
         return mapa.getLimiteY();
-    }
+    } // |
 
     public void setLienzo(Lienzo lienzo) {
         this.lienzo = lienzo;
@@ -165,7 +165,7 @@ public class Coordinador {
         }
 
         return true;
-    }
+    } // se usaba para la posicion random del fantasma
 
     public boolean esPared(int x, int y) {
         return mapa.esPared(y, x);
