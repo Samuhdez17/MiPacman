@@ -18,14 +18,16 @@ public abstract class Fantasma extends Actor {
     protected int generarPosicion() {
         int posicionRandom = random.nextInt(SPAWNS.length);
 
-        if (SPAWNS_OCUPADOS[posicionRandom]) {
-            while (SPAWNS_OCUPADOS[posicionRandom]) {
-                posicionRandom = random.nextInt(SPAWNS.length);
-            }
-        }
+        while (SPAWNS_OCUPADOS[posicionRandom]) posicionRandom = random.nextInt(SPAWNS.length);
+
+        System.out.println("Pos del fantasma: " + SPAWNS[posicionRandom]);
 
         SPAWNS_OCUPADOS[posicionRandom] = true;
 
         return posicionRandom;
+    }
+
+    public static void liberarPosiciones() {
+        for (int i = 0 ; i < SPAWNS.length ; i++) SPAWNS_OCUPADOS[i] = false;
     }
 }

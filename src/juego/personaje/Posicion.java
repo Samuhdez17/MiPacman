@@ -1,12 +1,6 @@
 package juego.personaje;
 
-import juego.Mapa;
-
-import java.util.Random;
-
 public class Posicion {
-    private Random random = new Random();
-
     private int x;
     private int y;
 
@@ -37,5 +31,9 @@ public class Posicion {
         Posicion otra = (Posicion) obj;
 
         return this.x == otra.x && this.y == otra.y;
+    }
+
+    public String toString() {
+        return String.format("(x: %d, y: %d)", x, y);
     }
 }

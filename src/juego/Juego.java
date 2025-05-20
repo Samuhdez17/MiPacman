@@ -1,5 +1,6 @@
 package juego;
 
+import juego.excepciones.JugadorGanoJuegoException;
 import juego.excepciones.PacmanComidoException;
 import juego.excepciones.SalirDelJuegoException;
 import juego.personaje.Fantasma;
@@ -16,13 +17,15 @@ public abstract class Juego implements Dibujable {
 
     protected final EstadoJuego estado;
     protected Mapa mapa;
+    protected int nivelActual;
 
     protected Pacman pacman;
     protected ArrayList<Fantasma> fantasmas = new ArrayList<>();
 
-    public Juego(Lienzo lienzo, Teclado teclado) {
+    public Juego(Lienzo lienzo, Teclado teclado, int nivelActual) {
         setLienzo(lienzo);
         this.teclado = teclado;
+        this.nivelActual = nivelActual;
 
         estado = new EstadoJuego(lienzo);
     }
@@ -31,7 +34,7 @@ public abstract class Juego implements Dibujable {
         return fantasma.getPosicion().equals(pacman.getPosicion());
     }
 
-    public void tick() throws PacmanComidoException, SalirDelJuegoException {
+    public void tick() throws PacmanComidoException, SalirDelJuegoException, JugadorGanoJuegoException {
         pacman.tick();
 
         if (mapa.hayPunto(pacman.getPosicion())) {
@@ -46,14 +49,16 @@ public abstract class Juego implements Dibujable {
 
             if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
         }
+
+        if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
     }
 
     public boolean pasarNivel() {
         return estado.todosPuntosComidos();
     }
 
-    public int puntuacion() {
-        return estado.puntuacion;
+    public void gG() {
+        estado.gG();
     }
 
     @Override

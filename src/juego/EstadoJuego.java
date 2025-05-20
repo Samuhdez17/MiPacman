@@ -14,8 +14,8 @@ public class EstadoJuego implements Dibujable {
         setLienzo(lienzo);
     }
 
-    public void setPuntosEnMapa(int puntuacion) {
-        this.puntosEnMapa = puntuacion;
+    public void setPuntosEnMapa(int puntos) {
+        this.puntosEnMapa = puntos;
     }
 
     public void decrementarPuntosEnMapa() {
@@ -27,9 +27,13 @@ public class EstadoJuego implements Dibujable {
         decrementarPuntosEnMapa();
     }
 
-    public boolean todosPuntosComidos() {
-        return puntosEnMapa == 0;
-//        return puntuacion == 1;
+    protected void gG() {
+        lienzo.escribirTexto(6, 7, "¡Ganaste!", Color.GREEN);
+    }
+
+    protected boolean todosPuntosComidos() {
+        //return puntosEnMapa == 0;
+        return puntuacion == 5;
     }
 
     public void setLienzo(Lienzo lienzo) {

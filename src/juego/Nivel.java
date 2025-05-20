@@ -15,8 +15,8 @@ public class Nivel extends Juego {
     private Scanner entrada;
 
     public Nivel(Lienzo lienzo, Teclado teclado, int nivel) {
-        super(lienzo, teclado);
-        crearLaberinto(nivel);
+        super(lienzo, teclado, nivel);
+        crearLaberinto(nivelActual);
     }
 
     private void crearLaberinto(int nivel) {
@@ -84,30 +84,41 @@ public class Nivel extends Juego {
     private void situarPersonajes(int nivel) {
         switch (nivel) {
             case 1 -> {
+                Fantasma.liberarPosiciones();
+
+                fantasmas.clear();
+
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= 3 ; i++) {
                     fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
+
             }
 
             case 2 -> {
+                Fantasma.liberarPosiciones();
+
+                fantasmas.clear();
+
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= 3 ; i++) {
-                    fantasmas.add(new FantasmaComun(lienzo, this, i));
-
                     if (i == 3) fantasmas.add(new FantasmaListo(lienzo, this, pacman));
+                    else fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
             }
 
             case 3 -> {
+                Fantasma.liberarPosiciones();
+
+                fantasmas.clear();
+
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= 3 ; i++) {
                     if (i == 3) fantasmas.add(new FantasmaComun(lienzo, this, i));
-
-                    fantasmas.add(new FantasmaListo(lienzo, this, pacman));
+                    else fantasmas.add(new FantasmaListo(lienzo, this, pacman));
                 }
             }
         }
