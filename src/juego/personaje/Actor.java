@@ -55,6 +55,7 @@ public abstract class Actor implements Dibujable, Tickable {
             else this.tick();
 
         } else if (this instanceof Fantasma && nivel.esFantasma(new Posicion(nuevaX, nuevaY))) {
+            //TODO Verificar si el siguiente movimiento no sea la posicion anterior
             this.tick();
 
         } else {

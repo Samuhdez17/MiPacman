@@ -3,6 +3,7 @@ package juego;
 import multimedia.Dibujable;
 import multimedia.Lienzo;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class EstadoJuego implements Dibujable {
@@ -28,12 +29,12 @@ public class EstadoJuego implements Dibujable {
     }
 
     protected void gG() {
-        lienzo.escribirTexto(6, 7, "¡Ganaste!", Color.GREEN);
+        JOptionPane.showMessageDialog((Component) lienzo, "¡Felicidades! Has ganado el juego.", "Felicidades", JOptionPane.INFORMATION_MESSAGE);
     }
 
     protected boolean todosPuntosComidos() {
-        //return puntosEnMapa == 0;
-        return puntuacion == 5;
+//        return puntosEnMapa == 0;
+        return puntuacion == 10;
     }
 
     public void setLienzo(Lienzo lienzo) {

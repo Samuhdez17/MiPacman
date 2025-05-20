@@ -85,7 +85,6 @@ public class Nivel extends Juego {
         switch (nivel) {
             case 1 -> {
                 Fantasma.liberarPosiciones();
-
                 fantasmas.clear();
 
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
@@ -98,7 +97,6 @@ public class Nivel extends Juego {
 
             case 2 -> {
                 Fantasma.liberarPosiciones();
-
                 fantasmas.clear();
 
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
@@ -111,7 +109,6 @@ public class Nivel extends Juego {
 
             case 3 -> {
                 Fantasma.liberarPosiciones();
-
                 fantasmas.clear();
 
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));

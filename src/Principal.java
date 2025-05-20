@@ -4,11 +4,11 @@ import juego.excepciones.PacmanComidoException;
 import juego.excepciones.SalirDelJuegoException;
 import multimedia.*;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class Principal {
-    private static final int MILLIS = 500;
+    private static final int TICK = 110;
+    private static final int cambioNivel = 100;
 
     public static void espera(int milisegundos) {
         try {
@@ -25,33 +25,32 @@ public class Principal {
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
         Nivel nivel;
+
+        int nivelActual = 1;
         boolean pacmanComido = false;
 
-        for (int nivelActual = 1; nivelActual <= 3; nivelActual++) {
+        while (nivelActual <= 3 && !pacmanComido) {
             int inicioPartida = (int) (System.currentTimeMillis() / 1000);
 
             nivel = new Nivel(ventana, ventana.getTeclado(), nivelActual);
 
             try {
-
-                while (!nivel.pasarNivel() && !pacmanComido) {
+                while (!nivel.pasarNivel()) {
                     int tiempoEnPartida = ((int) (System.currentTimeMillis() / 1000) - inicioPartida);
 
                     nivel.dibujar();
 
                     ventana.getTeclado().tick();
                     nivel.tick();
+//                    nivel.
 
-//                if (nivel.powerUp(nivelActual, tiempoEnPartida)) nivel.spawnearPwrUp();
-
-                    nivel.dibujar();
-
-                    espera(MILLIS);
+                    espera(TICK);
                 }
 
-            } catch (PacmanComidoException e) {
                 nivel.dibujar();
+                espera(cambioNivel);
 
+            } catch (PacmanComidoException e) {
                 System.out.println("¡Game Over! Te han comido.");
                 pacmanComido = true;
 
@@ -60,12 +59,14 @@ public class Principal {
                 System.exit(0);
 
             } catch (JugadorGanoJuegoException e) {
-                nivel.dibujar();
-
                 nivel.gG();
-                JOptionPane.showMessageDialog(ventana, "¡Felicidades! Has ganado el juego.", "Felicidades", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
+
+            } finally {
+                nivel.dibujar();
             }
+
+            nivelActual++;
         }
     }
 }
