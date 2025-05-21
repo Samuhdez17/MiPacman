@@ -84,19 +84,16 @@ public class Nivel extends Juego {
     private void situarPersonajes(int nivel) {
         switch (nivel) {
             case 1 -> {
-                Fantasma.liberarPosiciones();
-                fantasmas.clear();
-
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= 3 ; i++) {
                     fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
 
+                fantasmaLiberarPosiciones();
             }
 
             case 2 -> {
-                Fantasma.liberarPosiciones();
                 fantasmas.clear();
 
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
@@ -105,10 +102,11 @@ public class Nivel extends Juego {
                     if (i == 3) fantasmas.add(new FantasmaListo(lienzo, this, pacman));
                     else fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
+
+                fantasmaLiberarPosiciones();
             }
 
             case 3 -> {
-                Fantasma.liberarPosiciones();
                 fantasmas.clear();
 
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
@@ -118,6 +116,12 @@ public class Nivel extends Juego {
                     else fantasmas.add(new FantasmaListo(lienzo, this, pacman));
                 }
             }
+        }
+    }
+
+    private void fantasmaLiberarPosiciones() {
+        for (Fantasma fantasma : fantasmas) {
+            fantasma.liberarPosicion(fantasma.getPosicion());
         }
     }
 

@@ -12,22 +12,28 @@ public abstract class Fantasma extends Actor {
 
     public Fantasma(Lienzo lienzo, Nivel nivel, String imagen) {
         super(imagen, lienzo, nivel, new Posicion(0,0));
-        posicion = SPAWNS[generarPosicion()];
+
+        generarPosicion();
     }
 
-    protected int generarPosicion() {
+    protected void generarPosicion() {
         int posicionRandom = random.nextInt(SPAWNS.length);
 
         while (SPAWNS_OCUPADOS[posicionRandom]) posicionRandom = random.nextInt(SPAWNS.length);
 
-        System.out.println("Pos del fantasma: " + SPAWNS[posicionRandom]);
+        posicion.setX(SPAWNS[posicionRandom].getX());
+        posicion.setY(SPAWNS[posicionRandom].getY());
 
         SPAWNS_OCUPADOS[posicionRandom] = true;
-
-        return posicionRandom;
     }
 
-    public static void liberarPosiciones() {
-        for (int i = 0 ; i < SPAWNS.length ; i++) SPAWNS_OCUPADOS[i] = false;
+    public void liberarPosicion(Posicion posicion) {
+        for (int i = 0 ; i < SPAWNS.length ; i++) {
+            if (posicion.equals(SPAWNS[i])) {
+                SPAWNS_OCUPADOS[i] = false;
+
+                break;
+            }
+        }
     }
 }

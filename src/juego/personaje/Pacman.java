@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 
 public class Pacman extends Actor {
     private Teclado teclado;
-    private boolean pwrUp = false;
+    private boolean invencible = false;
 
     private static final String[] ANIMACION = {"pacman-abierto.png", "pacman-cerrado.png"};
 

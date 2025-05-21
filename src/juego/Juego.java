@@ -34,7 +34,7 @@ public abstract class Juego implements Dibujable {
         return fantasma.getPosicion().equals(pacman.getPosicion());
     }
 
-    public void tick() throws PacmanComidoException, SalirDelJuegoException, JugadorGanoJuegoException {
+    public void tick(int tiempoTranscurrido) throws PacmanComidoException, SalirDelJuegoException, JugadorGanoJuegoException {
         pacman.tick();
 
         if (mapa.hayPunto(pacman.getPosicion())) {
@@ -50,7 +50,17 @@ public abstract class Juego implements Dibujable {
             if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
         }
 
+        generarPwrUp(nivelActual);
+
         if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
+    }
+
+    private void generarPwrUp(int nivelActual) {
+        switch (nivelActual) {
+            case 1 -> {
+
+            }
+        }
     }
 
     public boolean pasarNivel() {

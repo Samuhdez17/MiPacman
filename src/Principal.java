@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class Principal {
     private static final int TICK = 110;
-    private static final int cambioNivel = 100;
+    private static final int CAMBIO_NIVEL = 100;
 
     public static void espera(int milisegundos) {
         try {
@@ -41,16 +41,17 @@ public class Principal {
                     nivel.dibujar();
 
                     ventana.getTeclado().tick();
-                    nivel.tick();
-//                    nivel.
+                    nivel.tick(tiempoEnPartida);
 
                     espera(TICK);
                 }
 
                 nivel.dibujar();
-                espera(cambioNivel);
+                espera(CAMBIO_NIVEL);
 
             } catch (PacmanComidoException e) {
+                nivel.dibujar();
+
                 System.out.println("¡Game Over! Te han comido.");
                 pacmanComido = true;
 
@@ -59,11 +60,11 @@ public class Principal {
                 System.exit(0);
 
             } catch (JugadorGanoJuegoException e) {
+                nivel.dibujar();
+
                 nivel.gG();
                 System.exit(0);
 
-            } finally {
-                nivel.dibujar();
             }
 
             nivelActual++;
