@@ -10,10 +10,10 @@ public class Pacman extends Actor {
     private Teclado teclado;
     private boolean invencible = false;
 
-    private static final String[] ANIMACION = {"pacman-abierto.png", "pacman-cerrado.png"};
+    private static final String[] ANIMACION = {"pacman/pacman-abierto.png", "pacman/pacman-cerrado.png"};
 
     public Pacman(Lienzo lienzo, Teclado teclado, Nivel nivel, Posicion posicionInicial) {
-        super("pacman-abierto.png", lienzo, nivel, posicionInicial);
+        super("pacman/pacman-abierto.png", lienzo, nivel, posicionInicial);
 
         this.teclado = teclado;
     }

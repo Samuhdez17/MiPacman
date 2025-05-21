@@ -50,14 +50,22 @@ public abstract class Juego implements Dibujable {
             if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
         }
 
-        generarPwrUp(nivelActual);
+        generarPwrUp(nivelActual, tiempoTranscurrido);
 
         if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
     }
 
-    private void generarPwrUp(int nivelActual) {
+    private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
         switch (nivelActual) {
             case 1 -> {
+
+            }
+
+            case 2 -> {
+
+            }
+
+            case 3 -> {
 
             }
         }

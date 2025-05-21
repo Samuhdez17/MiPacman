@@ -25,6 +25,14 @@ public class Posicion {
         this.y = y;
     }
 
+    public boolean difiereMasEnHorizontal(Posicion otra) {
+        int diferenciaX = Math.abs(this.x - otra.x);
+        int diferenciaY = Math.abs(this.y - otra.y);
+
+        return diferenciaX > diferenciaY;
+    }
+
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Posicion)) return false;
@@ -33,7 +41,4 @@ public class Posicion {
         return this.x == otra.x && this.y == otra.y;
     }
 
-    public String toString() {
-        return String.format("(x: %d, y: %d)", x, y);
-    }
 }

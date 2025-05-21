@@ -119,6 +119,7 @@ public class Nivel extends Juego {
         }
     }
 
+    /* Como se acaba de crear el fantasma, su posición es la inicial de alguna de las esquinas */
     private void fantasmaLiberarPosiciones() {
         for (Fantasma fantasma : fantasmas) {
             fantasma.liberarPosicion(fantasma.getPosicion());
