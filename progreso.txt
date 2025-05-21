@@ -9,3 +9,12 @@ y otro en el que hayan 2 fantasmas que sepan la posición de pacman.
 - hacer una clase que cree a los personajes y el mapa y se le pasa a nivel *HECHO*
 
 intentar medir el tiempo, para que cuando pase mucho rato spawnear un objeto que te permita comer fantasmas y que estos aparezcan al rato. (bastante complicado pero lo miraré)
+
+ultimo mensaje commit:
+Se genera el power up con una "animación" en el nivel 1, hay que plantearlo para los demás niveles.
+
+Hemos quitado juego y hemos hecho GameMaster, a modo de dispensador de Niveles.
+
+TODO: hacer que power up se coma y de efectos en x tiempo; que fantasma listo se mueva en base a la posición de pacman; hacer inercia.
+
+ERRORES: bug de que los fantasmas hacen stackflow si se apilan en un sitio (creo que con poner 'inercia' se soluciona, o, hacer un try-catch para StackOverlow y en el catch no hacer nada para que otros fantasmas se muevan y dejen hueco libre);
