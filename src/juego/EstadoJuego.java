@@ -7,9 +7,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class EstadoJuego implements Dibujable {
+    private Lienzo lienzo;
+
     private int puntosEnMapa;
     public int puntuacion;
-    private Lienzo lienzo;
+
+    private boolean invencibilidad = false;
 
     public EstadoJuego(Lienzo lienzo) {
         setLienzo(lienzo);
@@ -33,8 +36,8 @@ public class EstadoJuego implements Dibujable {
     }
 
     protected boolean todosPuntosComidos() {
-//        return puntosEnMapa == 0;
-        return puntuacion == 5;
+        return puntosEnMapa == 0;
+//        return puntuacion == 5;
     }
 
     public void setLienzo(Lienzo lienzo) {

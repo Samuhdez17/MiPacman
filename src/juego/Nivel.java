@@ -1,22 +1,53 @@
 package juego;
 
 import juego.excepciones.ErrorCargarMapaException;
+import juego.excepciones.JugadorGanoJuegoException;
+import juego.excepciones.PacmanComidoException;
+import juego.excepciones.SalirDelJuegoException;
 import juego.personaje.*;
 import multimedia.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
-public class Nivel extends Juego {
+public class Nivel implements Dibujable {
     private BufferedReader lecturaPatronMapa;
     private Scanner entrada;
 
+    protected Lienzo lienzo;
+    protected Teclado teclado;
+
+    protected EstadoJuego estado;
+    protected Mapa mapa;
+    protected int nivelActual;
+    protected PowerUp powerUp = null;
+
+    protected Pacman pacman;
+    protected ArrayList<Fantasma> fantasmas = new ArrayList<>();
+
     public Nivel(Lienzo lienzo, Teclado teclado, int nivel) {
-        super(lienzo, teclado, nivel);
+        setLienzo(lienzo);
+        this.teclado = teclado;
+        nivelActual = nivel;
+
+        estado = new EstadoJuego(this.lienzo);
+
         crearLaberinto(nivelActual);
+    }
+
+    public int getNivelActual() {
+        return nivelActual;
+    }
+
+    public int getLimiteX() {
+        return mapa.getLimiteX();
+    }
+    public int getLimiteY() {
+        return mapa.getLimiteY();
     }
 
     private void crearLaberinto(int nivel) {
@@ -119,7 +150,7 @@ public class Nivel extends Juego {
         }
     }
 
-    /* Como se acaba de crear el fantasma, su posición es la inicial de alguna de las esquinas */
+    /* Como se acaba de crear el fantasma, su posición inicial es la de alguna de las esquinas */
     private void fantasmaLiberarPosiciones() {
         for (Fantasma fantasma : fantasmas) {
             fantasma.liberarPosicion(fantasma.getPosicion());
@@ -146,7 +177,57 @@ public class Nivel extends Juego {
         }
 
         return true;
-    } // se usaba para la posicion random del fantasma
+    }
+
+    public boolean verificarIntercambio(Fantasma fantasma) {
+        return fantasma.getPosicion().equals(pacman.getPosicion());
+    }
+
+    public void tick(int tiempoTranscurrido) throws PacmanComidoException, SalirDelJuegoException, JugadorGanoJuegoException {
+        pacman.tick();
+
+        if (mapa.hayPunto(pacman.getPosicion())) {
+            estado.incrementarPuntuacion();
+            mapa.retirarPunto(pacman.getPosicion());
+        }
+
+        for (Fantasma fantasma : fantasmas) {
+            if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
+
+            fantasma.tick();
+
+            if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
+        }
+
+        generarPwrUp(nivelActual, tiempoTranscurrido);
+
+        if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
+    }
+
+    private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
+        switch (nivelActual) {
+            case 1 -> {
+                if (tiempoTranscurrido == 5) {
+                    powerUp = new PowerUp(lienzo, this);
+
+                } else if (tiempoTranscurrido > 5 && powerUp != null) {
+                    if (mapa.hayPunto(powerUp.getPosicion())) {
+                        mapa.retirarPunto(powerUp.getPosicion());
+                        estado.setPuntosEnMapa(mapa.getPuntosMapa());
+                    }
+                }
+            }
+
+            case 2 -> {
+
+            }
+
+            case 3 -> {
+
+            }
+        }
+
+    }
 
     public boolean esPared(int x, int y) {
         return mapa.esPared(y, x);
@@ -158,5 +239,36 @@ public class Nivel extends Juego {
         }
 
         return false;
+    }
+
+    public boolean pasarNivel() {
+        return estado.todosPuntosComidos();
+    }
+
+    public void gG() {
+        estado.gG();
+    }
+
+    @Override
+    public void setLienzo(Lienzo lienzo) {
+        this.lienzo = lienzo;
+    }
+
+    @Override
+    public void dibujar() {
+        lienzo.limpiar();
+
+        mapa.dibujar();
+        if (powerUp != null) powerUp.dibujar();
+
+        pacman.dibujar();
+
+        for (Fantasma fantasma : fantasmas) {
+            fantasma.dibujar();
+        }
+
+        estado.dibujar();
+
+        lienzo.volcar();
     }
 }

@@ -1,3 +1,4 @@
+import juego.GameMaster;
 import juego.Nivel;
 import juego.excepciones.JugadorGanoJuegoException;
 import juego.excepciones.PacmanComidoException;
@@ -7,7 +8,7 @@ import multimedia.*;
 import java.awt.*;
 
 public class Principal {
-    private static final int TICK = 110;
+    private static final int TICK = 100;
     private static final int CAMBIO_NIVEL = 100;
 
     public static void espera(int milisegundos) {
@@ -24,7 +25,6 @@ public class Principal {
         Color colorFondo = Color.BLACK;
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
-        Nivel nivel;
 
         int nivelActual = 1;
         boolean pacmanComido = false;
@@ -32,7 +32,8 @@ public class Principal {
         while (nivelActual <= 3 && !pacmanComido) {
             int inicioPartida = (int) (System.currentTimeMillis() / 1000);
 
-            nivel = new Nivel(ventana, ventana.getTeclado(), nivelActual);
+            GameMaster gameMaster = new GameMaster(ventana, ventana.getTeclado(), nivelActual);
+            Nivel nivel = gameMaster.getNivel();
 
             try {
                 while (!nivel.pasarNivel()) {
