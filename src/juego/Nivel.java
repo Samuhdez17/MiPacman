@@ -205,25 +205,20 @@ public class Nivel implements Dibujable {
     }
 
     private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
-        switch (nivelActual) {
-            case 1 -> {
-                if (tiempoTranscurrido == 5) {
-                    powerUp = new PowerUp(lienzo, this);
+        int momentoAparicion;
 
-                } else if (tiempoTranscurrido > 5 && powerUp != null) {
-                    if (mapa.hayPunto(powerUp.getPosicion())) {
-                        mapa.retirarPunto(powerUp.getPosicion());
-                        estado.setPuntosEnMapa(mapa.getPuntosMapa());
-                    }
-                }
-            }
 
-            case 2 -> {
+        if      (nivelActual == 1) momentoAparicion = 4;
+        else if (nivelActual == 2) momentoAparicion = 5;
+        else                       momentoAparicion = 6;
 
-            }
+        if (tiempoTranscurrido == momentoAparicion) {
+            powerUp = new PowerUp(lienzo, this);
 
-            case 3 -> {
-
+        } else if (tiempoTranscurrido > momentoAparicion && powerUp != null) {
+            if (mapa.hayPunto(powerUp.getPosicion())) {
+                mapa.retirarPunto(powerUp.getPosicion());
+                estado.setPuntosEnMapa(mapa.getPuntosMapa());
             }
         }
 
