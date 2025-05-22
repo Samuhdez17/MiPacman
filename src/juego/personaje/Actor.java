@@ -39,7 +39,7 @@ public abstract class Actor implements Dibujable, Tickable {
     }
 
     public void mover(Direccion dir) throws MovimientoInvalidoException, SalirDelJuegoException {
-        int nuevaX = posicion.getX();;
+        int nuevaX = posicion.getX();
         int nuevaY = posicion.getY();
 
         switch (dir) {
@@ -56,7 +56,11 @@ public abstract class Actor implements Dibujable, Tickable {
 
         } else if (this instanceof Fantasma && nivel.esFantasma(new Posicion(nuevaX, nuevaY))) {
             //TODO Verificar si el siguiente movimiento no sea la posicion anterior
-            this.tick();
+            try {
+                mover(dir);
+            } catch (StackOverflowError e) {
+                // Dejamos que otros fantasmas se muevan para que dejen hueco libre y asi poder movernos
+            }
 
         } else {
             posicion.setX(nuevaX);

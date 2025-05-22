@@ -6,7 +6,6 @@ import juego.excepciones.ErrorCargarImagenException;
 import juego.personaje.Posicion;
 import multimedia.Dibujable;
 import multimedia.Lienzo;
-import multimedia.Tickable;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,32 +14,37 @@ import java.io.IOException;
 
 public class PowerUp implements Dibujable {
     private Lienzo lienzo;
-    private int duracion;
+    private int duracionMax;
 
     private Image imagen;
     private Posicion posicion;
 
     public PowerUp(Lienzo lienzo, Nivel nivel) {
         setLienzo(lienzo);
-        setImagen();
 
-        setDuracion(nivel.getNivelActual());
+        if (nivel.getNivelActual() == 2) setImagen("champi.png");
+        else                             setImagen("pwr-up.png");
+
+        setDuracionMax(nivel.getNivelActual());
         generarPosicion(nivel);
     }
 
-    private void setDuracion(int nivelActual) {
-        if (nivelActual == 1) duracion = 4;
-        else if (nivelActual == 2) duracion = 5;
-        else duracion = 6;
+    private void setDuracionMax(int nivelActual) {
+        if      (nivelActual == 1) duracionMax = 4;
+        else if (nivelActual == 2) duracionMax = 5;
+        else                       duracionMax = 6;
     }
 
     public Posicion getPosicion() {
         return posicion;
     }
+    public int getDuracionMax() {
+        return duracionMax;
+    }
 
-    private void setImagen() {
+    private void setImagen(String nombreImagen) {
         try {
-            imagen = ImageIO.read(new File("src/assets/pwr-up.png"));
+            imagen = ImageIO.read(new File("src/assets/"  + nombreImagen));
 
         } catch (IOException e) {
             throw new ErrorCargarImagenException(e);

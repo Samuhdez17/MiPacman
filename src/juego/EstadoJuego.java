@@ -37,7 +37,7 @@ public class EstadoJuego implements Dibujable {
 
     protected boolean todosPuntosComidos() {
         return puntosEnMapa == 0;
-//        return puntuacion == 5;
+//        return puntuacion == 10;
     }
 
     public void setLienzo(Lienzo lienzo) {

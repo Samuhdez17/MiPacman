@@ -8,7 +8,7 @@ import multimedia.*;
 import java.awt.*;
 
 public class Principal {
-    private static final int TICK = 100;
+    private static final int TICK = 110; // 110 500
     private static final int CAMBIO_NIVEL = 100;
 
     public static void espera(int milisegundos) {
@@ -26,7 +26,7 @@ public class Principal {
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
 
-        int nivelActual = 1;
+        int nivelActual = 2;
         boolean pacmanComido = false;
 
         while (nivelActual <= 3 && !pacmanComido) {

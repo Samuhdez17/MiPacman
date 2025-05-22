@@ -8,17 +8,22 @@ import multimedia.Lienzo;
 public class FantasmaListo extends Fantasma {
     private static final String IMAGEN = "fantasmas/fantasma-listo.png";
     private final Posicion posPacman;
+    private final Posicion actual;
 
     public FantasmaListo(Lienzo lienzo, Nivel nivel, Pacman pacman) {
         super(lienzo, nivel, IMAGEN);
 
-        this.posPacman = pacman.getPosicion();
+        actual = getPosicion();
+        posPacman = pacman.getPosicion();
     }
 
     public void tick() throws SalirDelJuegoException {
-        try {
+        Direccion dir;
 
-            Direccion dir = Direccion.values()[random.nextInt(4)];
+        if (!posPacman.difiereMasEnHorizontal(actual)) dir = actual.izquieraODerecha(posPacman);
+        else                                           dir = actual.arribaOAbajo    (posPacman);
+
+        try {
             mover(dir);
         } catch (MovimientoInvalidoException ignored) {
         }

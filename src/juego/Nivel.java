@@ -24,19 +24,24 @@ public class Nivel implements Dibujable {
     protected EstadoJuego estado;
     protected Mapa mapa;
     protected int nivelActual;
-    protected PowerUp powerUp = null;
+    protected PowerUp powerUp;
 
     protected Pacman pacman;
+    private static final int FANTASMAS_POR_NIVEL = 3;
     protected ArrayList<Fantasma> fantasmas = new ArrayList<>();
 
-    public Nivel(Lienzo lienzo, Teclado teclado, int nivel) {
+    public Nivel(Lienzo lienzo, Teclado teclado, int nivelActual) {
         setLienzo(lienzo);
         this.teclado = teclado;
-        nivelActual = nivel;
+        this.nivelActual = nivelActual;
 
         estado = new EstadoJuego(this.lienzo);
 
-        crearLaberinto(nivelActual);
+        crearLaberinto(this.nivelActual);
+    }
+
+    public int getFantasmasPorNivel() {
+        return FANTASMAS_POR_NIVEL;
     }
 
     public int getNivelActual() {
@@ -113,6 +118,8 @@ public class Nivel implements Dibujable {
     }
 
     private void situarPersonajes(int nivel) {
+        fantasmas.clear();
+
         switch (nivel) {
             case 1 -> {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
@@ -120,26 +127,18 @@ public class Nivel implements Dibujable {
                 for (int i = 1 ; i <= 3 ; i++) {
                     fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
-
-                fantasmaLiberarPosiciones();
             }
 
             case 2 -> {
-                fantasmas.clear();
-
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= 3 ; i++) {
                     if (i == 3) fantasmas.add(new FantasmaListo(lienzo, this, pacman));
                     else fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
-
-                fantasmaLiberarPosiciones();
             }
 
             case 3 -> {
-                fantasmas.clear();
-
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= 3 ; i++) {
@@ -148,6 +147,8 @@ public class Nivel implements Dibujable {
                 }
             }
         }
+
+        fantasmaLiberarPosiciones();
     }
 
     /* Como se acaba de crear el fantasma, su posición inicial es la de alguna de las esquinas */
@@ -222,6 +223,10 @@ public class Nivel implements Dibujable {
             }
         }
 
+    }
+
+    public boolean esPwrUp(Posicion posicion) {
+        return powerUp != null && powerUp.getPosicion().equals(posicion);
     }
 
     public boolean esPared(int x, int y) {

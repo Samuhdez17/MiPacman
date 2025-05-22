@@ -25,11 +25,21 @@ public class Posicion {
         this.y = y;
     }
 
-    public boolean difiereMasEnHorizontal(Posicion otra) {
-        int diferenciaX = Math.abs(this.x - otra.x);
-        int diferenciaY = Math.abs(this.y - otra.y);
+    protected boolean difiereMasEnHorizontal(Posicion otra) {
+        int diferenciaX = Math.abs(this.getX() - otra.getX());
+        int diferenciaY = Math.abs(this.getY() - otra.getY());
 
-        return diferenciaX > diferenciaY;
+        return diferenciaX < diferenciaY;
+    }
+
+    protected Direccion arribaOAbajo(Posicion otra) {
+        if (this.getY() > otra.getY()) return Direccion.ARR;
+        else                           return Direccion.ABA;
+    }
+
+    protected Direccion izquieraODerecha(Posicion otra) {
+        if (this.getX() < otra.getX()) return Direccion.DCH;
+        else                           return Direccion.IZD;
     }
 
 
