@@ -1,5 +1,7 @@
 package juego.personaje;
 
+import juego.excepciones.SalirDelJuegoException;
+
 public class Posicion {
     private int x;
     private int y;
@@ -25,23 +27,26 @@ public class Posicion {
         this.y = y;
     }
 
-    protected boolean difiereMasEnHorizontal(Posicion otra) {
-        int diferenciaX = Math.abs(this.getX() - otra.getX());
-        int diferenciaY = Math.abs(this.getY() - otra.getY());
+    public Posicion desplazarse(Direccion dir) throws SalirDelJuegoException {
+        int nuevaX = getX();
+        int nuevaY = getY();
 
-        return diferenciaX < diferenciaY;
+        switch (dir) {
+            case ARR -> nuevaY = getY() - 1;
+            case ABA -> nuevaY = getY() + 1;
+            case IZD -> nuevaX = getX() - 1;
+            case DCH -> nuevaX = getX() + 1;
+            case Q -> throw new SalirDelJuegoException();
+        }
+
+        return new Posicion(nuevaX, nuevaY);
     }
 
-    protected Direccion arribaOAbajo(Posicion otra) {
-        if (this.getY() > otra.getY()) return Direccion.ARR;
-        else                           return Direccion.ABA;
+    public double distanciaHaciaPacman(Posicion posPacman) {
+        int dx = posPacman.getX() - this.getX();
+        int dy = posPacman.getY() - this.getY();
+        return Math.sqrt(dx * dx + dy * dy);
     }
-
-    protected Direccion izquieraODerecha(Posicion otra) {
-        if (this.getX() < otra.getX()) return Direccion.DCH;
-        else                           return Direccion.IZD;
-    }
-
 
     @Override
     public boolean equals(Object obj) {

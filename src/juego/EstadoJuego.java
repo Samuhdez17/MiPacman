@@ -31,8 +31,16 @@ public class EstadoJuego implements Dibujable {
         decrementarPuntosEnMapa();
     }
 
+    public void tick() {
+
+    }
+
     protected void gG() {
         JOptionPane.showMessageDialog((Component) lienzo, "¡Felicidades! Has ganado el juego.", "Felicidades", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void cambiarInvencibilidad() {
+        invencibilidad = !invencibilidad;
     }
 
     protected boolean todosPuntosComidos() {

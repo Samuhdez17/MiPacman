@@ -26,7 +26,7 @@ public class Principal {
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
 
-        int nivelActual = 2;
+        int nivelActual = 1;
         boolean pacmanComido = false;
 
         while (nivelActual <= 3 && !pacmanComido) {

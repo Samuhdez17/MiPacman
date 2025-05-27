@@ -10,22 +10,37 @@ public class FantasmaListo extends Fantasma {
     private final Posicion posPacman;
     private final Posicion actual;
 
-    public FantasmaListo(Lienzo lienzo, Nivel nivel, Pacman pacman) {
+    public FantasmaListo(Lienzo lienzo, Nivel nivel, Posicion posPacman) {
         super(lienzo, nivel, IMAGEN);
 
         actual = getPosicion();
-        posPacman = pacman.getPosicion();
+        this.posPacman = posPacman;
     }
 
     public void tick() throws SalirDelJuegoException {
-        Direccion dir;
+        Direccion dir = null;
+        double distanciaMasCorta = Double.MAX_VALUE;
 
-        if (!posPacman.difiereMasEnHorizontal(actual)) dir = actual.izquieraODerecha(posPacman);
-        else                                           dir = actual.arribaOAbajo    (posPacman);
+        for (Direccion direccion : Direccion.values()) {
+            if (direccion != Direccion.Q) {
+                Posicion nuevaPosicion = actual.desplazarse(direccion);
 
-        try {
-            mover(dir);
-        } catch (MovimientoInvalidoException ignored) {
+                if (nivel.esTransitable(nuevaPosicion)) {
+                    double distancia = nuevaPosicion.distanciaHaciaPacman(posPacman);
+
+                    if (distancia < distanciaMasCorta) {
+                        distanciaMasCorta = distancia;
+                        dir = direccion;
+                    }
+                }
+            }
+        }
+
+        if (dir != null) {
+            try {
+                mover(dir);
+            } catch (MovimientoInvalidoException ignored) {
+            }
         }
     }
 }

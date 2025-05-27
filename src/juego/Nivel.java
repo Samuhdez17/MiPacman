@@ -124,7 +124,7 @@ public class Nivel implements Dibujable {
             case 1 -> {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
-                for (int i = 1 ; i <= 3 ; i++) {
+                for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
                     fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
             }
@@ -132,8 +132,8 @@ public class Nivel implements Dibujable {
             case 2 -> {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
-                for (int i = 1 ; i <= 3 ; i++) {
-                    if (i == 3) fantasmas.add(new FantasmaListo(lienzo, this, pacman));
+                for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
+                    if (i == 1) fantasmas.add(new FantasmaListo(lienzo, this, pacman.getPosicion()));
                     else fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
             }
@@ -141,9 +141,9 @@ public class Nivel implements Dibujable {
             case 3 -> {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
-                for (int i = 1 ; i <= 3 ; i++) {
-                    if (i == 3) fantasmas.add(new FantasmaComun(lienzo, this, i));
-                    else fantasmas.add(new FantasmaListo(lienzo, this, pacman));
+                for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
+                    if (i == 1) fantasmas.add(new FantasmaComun(lienzo, this, i));
+                    else fantasmas.add(new FantasmaListo(lienzo, this, pacman.getPosicion()));
                 }
             }
         }
@@ -168,18 +168,6 @@ public class Nivel implements Dibujable {
         }
     }
 
-    public boolean estaLibre(Posicion posicion) {
-        if (!mapa.esTransitable(posicion)) return false;
-
-        if (posicion.equals(pacman.getPosicion())) return false;
-
-        for (Fantasma fantasma : fantasmas) {
-            if (posicion.equals(fantasma.getPosicion())) return false;
-        }
-
-        return true;
-    }
-
     public boolean verificarIntercambio(Fantasma fantasma) {
         return fantasma.getPosicion().equals(pacman.getPosicion());
     }
@@ -201,6 +189,13 @@ public class Nivel implements Dibujable {
         }
 
         generarPwrUp(nivelActual, tiempoTranscurrido);
+
+        if (powerUp != null) {
+            if (pacman.getPosicion().equals(powerUp.getPosicion())) {
+                powerUp = null;
+                estado.cambiarInvencibilidad();
+            }
+        }
 
         if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
     }
@@ -227,6 +222,22 @@ public class Nivel implements Dibujable {
 
     public boolean esPwrUp(Posicion posicion) {
         return powerUp != null && powerUp.getPosicion().equals(posicion);
+    }
+
+    public boolean estaLibre(Posicion posicion) {
+        if (!mapa.esTransitable(posicion)) return false;
+
+        if (posicion.equals(pacman.getPosicion())) return false;
+
+        for (Fantasma fantasma : fantasmas) {
+            if (posicion.equals(fantasma.getPosicion())) return false;
+        }
+
+        return true;
+    }
+
+    public boolean esTransitable(Posicion posicion) {
+        return mapa.esTransitable(posicion);
     }
 
     public boolean esPared(int x, int y) {

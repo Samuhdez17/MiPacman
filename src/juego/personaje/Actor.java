@@ -39,22 +39,14 @@ public abstract class Actor implements Dibujable, Tickable {
     }
 
     public void mover(Direccion dir) throws MovimientoInvalidoException, SalirDelJuegoException {
-        int nuevaX = posicion.getX();
-        int nuevaY = posicion.getY();
-
-        switch (dir) {
-            case ARR -> nuevaY = posicion.getY() - 1;
-            case ABA -> nuevaY = posicion.getY() + 1;
-            case IZD -> nuevaX = posicion.getX() - 1;
-            case DCH -> nuevaX = posicion.getX() + 1;
-            case Q -> throw new SalirDelJuegoException();
-        }
+        int nuevaX = posicion.desplazarse(dir).getX();
+        int nuevaY = posicion.desplazarse(dir).getY();
 
         if (nivel.esPared(nuevaX, nuevaY)) {
             if (this instanceof Pacman) System.out.println("Chocaste con una pared!");
             else this.tick();
 
-        } else if (this instanceof Fantasma && nivel.esFantasma(new Posicion(nuevaX, nuevaY))) {
+        } else if (this instanceof FantasmaComun && nivel.esFantasma(new Posicion(nuevaX, nuevaY))) {
             //TODO Verificar si el siguiente movimiento no sea la posicion anterior
             try {
                 mover(dir);
