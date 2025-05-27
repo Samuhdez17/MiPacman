@@ -11,10 +11,10 @@ y otro en el que hayan 2 fantasmas que sepan la posición de pacman.
 intentar medir el tiempo, para que cuando pase mucho rato spawnear un objeto que te permita comer fantasmas y que estos aparezcan al rato. (bastante complicado pero lo miraré)
 
 ultimo mensaje commit:
-Se empieza a implementar el movimiento de fantasma listo.
+Se hace que FantasmaListo persiga a Pacman por fin, empezamos a darle utilidad al power up.
 
-Se le cambia la imagen al power up para que quede bien con el tema del nivel.
+No vamos a poner inercia, ya que con el movimiento en diagonal puedes esquivar al FantasmaListo
 
-TODO: hacer que power up se coma y de efectos en x tiempo; que fantasma listo se mueva en base a la posición de pacman; hacer inercia.
+TODO: hacer que power up se coma y de efectos en x tiempo;
 
-ERRORES: bug en fantasma listo, hace stack overflow porque se mueve todo el rato hacia un muro para seguir a pacman
+ERRORES:
