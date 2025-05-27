@@ -8,14 +8,17 @@ import java.awt.*;
 
 public class EstadoJuego implements Dibujable {
     private Lienzo lienzo;
+    private final Nivel nivelActual;
 
     private int puntosEnMapa;
     public int puntuacion;
 
     private boolean invencibilidad = false;
+    private int momentoPwrUp = 0;
 
-    public EstadoJuego(Lienzo lienzo) {
+    public EstadoJuego(Lienzo lienzo, Nivel nivelActual) {
         setLienzo(lienzo);
+        this.nivelActual = nivelActual;
     }
 
     public void setPuntosEnMapa(int puntos) {
@@ -31,8 +34,14 @@ public class EstadoJuego implements Dibujable {
         decrementarPuntosEnMapa();
     }
 
-    public void tick() {
-
+    public void tick(int tiempoEnPartida) {
+        if (nivelActual.getPowerUp() != null) {
+            if (nivelActual.pacmanComioPwrUp()) {
+                nivelActual.eliminarPwrUp();
+                momentoPwrUp = tiempoEnPartida;
+                cambiarInvencibilidad();
+            }
+        }
     }
 
     protected void gG() {

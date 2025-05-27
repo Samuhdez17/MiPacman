@@ -35,7 +35,7 @@ public class Nivel implements Dibujable {
         this.teclado = teclado;
         this.nivelActual = nivelActual;
 
-        estado = new EstadoJuego(this.lienzo);
+        estado = new EstadoJuego(this.lienzo, this);
 
         crearLaberinto(this.nivelActual);
     }
@@ -47,12 +47,19 @@ public class Nivel implements Dibujable {
     public int getNivelActual() {
         return nivelActual;
     }
+    public PowerUp getPowerUp() {
+        return powerUp;
+    }
 
     public int getLimiteX() {
         return mapa.getLimiteX();
     }
     public int getLimiteY() {
         return mapa.getLimiteY();
+    }
+
+    public void eliminarPwrUp() {
+        powerUp = null;
     }
 
     private void crearLaberinto(int nivel) {
@@ -190,12 +197,7 @@ public class Nivel implements Dibujable {
 
         generarPwrUp(nivelActual, tiempoTranscurrido);
 
-        if (powerUp != null) {
-            if (pacman.getPosicion().equals(powerUp.getPosicion())) {
-                powerUp = null;
-                estado.cambiarInvencibilidad();
-            }
-        }
+        estado.tick(tiempoTranscurrido);
 
         if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
     }
@@ -250,6 +252,10 @@ public class Nivel implements Dibujable {
         }
 
         return false;
+    }
+
+    public boolean pacmanComioPwrUp() {
+        return pacman.getPosicion().equals(powerUp.getPosicion());
     }
 
     public boolean pasarNivel() {
