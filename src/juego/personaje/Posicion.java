@@ -45,6 +45,7 @@ public class Posicion {
     public double distanciaHastaPacman(Posicion posPacman) {
         int dx = posPacman.getX() - this.getX();
         int dy = posPacman.getY() - this.getY();
+
         return Math.sqrt(dx * dx + dy * dy);
     }
 

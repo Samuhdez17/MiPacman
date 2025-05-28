@@ -28,7 +28,8 @@ public class Nivel implements Dibujable {
 
     protected Pacman pacman;
     private static final int FANTASMAS_POR_NIVEL = 3;
-    protected ArrayList<Fantasma> fantasmas = new ArrayList<>();
+    protected ArrayList<Fantasma> fantasmasVivos = new ArrayList<>();
+    protected ArrayList<Fantasma> fantasmasComidos = new ArrayList<>();
 
     public Nivel(Lienzo lienzo, Teclado teclado, int nivelActual) {
         setLienzo(lienzo);
@@ -126,14 +127,14 @@ public class Nivel implements Dibujable {
     }
 
     private void situarPersonajes(int nivel) {
-        fantasmas.clear();
+        fantasmasVivos.clear();
 
         switch (nivel) {
             case 1 -> {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
-                    fantasmas.add(new FantasmaComun(lienzo, this, i));
+                    fantasmasVivos.add(new FantasmaComun(lienzo, this, i));
                 }
             }
 
@@ -141,8 +142,8 @@ public class Nivel implements Dibujable {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
-                    if (i == 1) fantasmas.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
-                    else fantasmas.add(new FantasmaComun(lienzo, this, i));
+                    if (i == 1) fantasmasVivos.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
+                    else fantasmasVivos.add(new FantasmaComun(lienzo, this, i));
                 }
             }
 
@@ -150,8 +151,8 @@ public class Nivel implements Dibujable {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
-                    if (i == 1) fantasmas.add(new FantasmaComun(lienzo, this, i));
-                    else fantasmas.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
+                    if (i == 1) fantasmasVivos.add(new FantasmaComun(lienzo, this, i));
+                    else fantasmasVivos.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
                 }
             }
         }
@@ -161,8 +162,8 @@ public class Nivel implements Dibujable {
 
     /* Como se acaba de crear el fantasma, su posición inicial es la de alguna de las esquinas */
     private void fantasmaLiberarPosiciones() {
-        for (Fantasma fantasma : fantasmas) {
-            fantasma.liberarPosicion(fantasma.getPosicion());
+        for (Fantasma fantasma : fantasmasVivos) {
+            fantasma.liberarPosicion(fantasma.getPosicionInicial());
         }
     }
 
@@ -184,7 +185,7 @@ public class Nivel implements Dibujable {
             mapa.retirarPunto(pacman.getPosicion());
         }
 
-        fantasmasTick();
+        fantasmasTick(tiempoTranscurrido);
 
         generarPwrUp(nivelActual, tiempoTranscurrido);
 
@@ -193,8 +194,8 @@ public class Nivel implements Dibujable {
         if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
     }
 
-    private void fantasmasTick() throws SalirDelJuegoException {
-        for (Fantasma fantasma : fantasmas) {
+    private void fantasmasTick(int tiempoTranscurrido) throws SalirDelJuegoException {
+        for (Fantasma fantasma : fantasmasVivos) {
             if (estado.pacmanInvencible()) {
                 fantasma.debilitar();
 
@@ -213,7 +214,23 @@ public class Nivel implements Dibujable {
 
                 if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
             }
+        }
 
+        for (int fantasma = 0; fantasma < fantasmasVivos.size() ; fantasma++) {
+            if (fantasmasVivos.get(fantasma).estaComido()) {
+                fantasmasVivos.get(fantasma).setMomentoComido(tiempoTranscurrido);
+
+                fantasmasComidos.add(fantasmasVivos.get(fantasma));
+                fantasmasVivos.remove(fantasmasVivos.get(fantasma));
+            }
+        }
+
+        if (!fantasmasComidos.isEmpty()) {
+            for (int fantasma = 0 ; fantasma < fantasmasComidos.size() ; fantasma++) {
+                if (fantasmasComidos.get(fantasma).getMomentoComido() - tiempoTranscurrido >= 5) {
+                    fantasmasComidos.get(fantasma).liberarPosicion(fantasmasComidos.get(fantasma).getPosicionInicial());
+                }
+            }
         }
     }
 
@@ -224,8 +241,7 @@ public class Nivel implements Dibujable {
     private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
         int momentoAparicion;
 
-
-        if      (nivelActual == 1) momentoAparicion = 4;
+        if      (nivelActual == 1) momentoAparicion = 1;
         else if (nivelActual == 2) momentoAparicion = 5;
         else                       momentoAparicion = 6;
 
@@ -250,7 +266,7 @@ public class Nivel implements Dibujable {
 
         if (posicion.equals(pacman.getPosicion())) return false;
 
-        for (Fantasma fantasma : fantasmas) {
+        for (Fantasma fantasma : fantasmasVivos) {
             if (posicion.equals(fantasma.getPosicion())) return false;
         }
 
@@ -266,7 +282,7 @@ public class Nivel implements Dibujable {
     }
 
     public boolean esFantasma(Posicion posicion) {
-        for (Fantasma fantasma : fantasmas) {
+        for (Fantasma fantasma : fantasmasVivos) {
             if (posicion.equals(fantasma.getPosicion())) return true;
         }
 
@@ -274,7 +290,7 @@ public class Nivel implements Dibujable {
     }
 
     public boolean pacmanComioPwrUp() {
-        return pacman.getPosicion().equals(powerUp.getPosicion());
+        return esPwrUp(pacman.getPosicion());
     }
 
     public boolean pasarNivel() {
@@ -299,7 +315,7 @@ public class Nivel implements Dibujable {
 
         pacman.dibujar();
 
-        for (Fantasma fantasma : fantasmas) fantasma.dibujar();
+        for (Fantasma fantasma : fantasmasVivos) fantasma.dibujar();
 
         lienzo.volcar();
     }

@@ -30,7 +30,7 @@ public class PowerUp implements Dibujable {
     }
 
     private void setDuracionMax(int nivelActual) {
-        if      (nivelActual == 1) duracionMax = 10;
+        if      (nivelActual == 1) duracionMax = 5;
         else if (nivelActual == 2) duracionMax = 6;
         else                       duracionMax = 2;
     }

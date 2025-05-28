@@ -4,7 +4,6 @@ import juego.Nivel;
 import multimedia.*;
 
 import java.util.Random;
-import java.util.Scanner;
 
 public abstract class Fantasma extends Actor {
     protected final Random random = new Random();
@@ -15,6 +14,7 @@ public abstract class Fantasma extends Actor {
     private final String imagenInicial;
 
     protected boolean debil = false;
+    private int momentoComido = 0;
     protected boolean comido = false;
 
     public Fantasma(Lienzo lienzo, Nivel nivel, String imagen) {
@@ -22,6 +22,14 @@ public abstract class Fantasma extends Actor {
 
         imagenInicial = imagen;
         generarPosicion();
+    }
+
+    public int getMomentoComido() {
+        return momentoComido;
+    }
+
+    public void setMomentoComido(int momentoComido) {
+        this.momentoComido = momentoComido;
     }
 
     protected void generarPosicion() {
@@ -59,5 +67,13 @@ public abstract class Fantasma extends Actor {
 
     public void haSidoComido() {
         comido = true;
+    }
+
+    public void revivir() {
+        comido = false;
+    }
+
+    public boolean estaComido() {
+        return comido;
     }
 }

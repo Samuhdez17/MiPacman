@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Principal {
-    private static final int TICK = 110; // 110 500
+    private static final int TICK = 120; // 110 500
     private static final int CAMBIO_NIVEL = 200;
 
     public static void espera(int milisegundos) {
@@ -28,9 +28,8 @@ public class Principal {
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
 
         int nivelActual = 1;
-        boolean pacmanComido = false;
 
-        while (nivelActual <= 3 && !pacmanComido) {
+        while (nivelActual <= 3) {
             int inicioPartida = (int) (System.currentTimeMillis() / 1000);
 
             GameMaster gameMaster = new GameMaster(ventana, ventana.getTeclado(), nivelActual);
@@ -51,14 +50,14 @@ public class Principal {
                 }
 
                 nivel.dibujar();
+                espera(CAMBIO_NIVEL);
 
-                JOptionPane.showMessageDialog(ventana, "Completaste el nivel", "Siguiente nivel", JOptionPane.INFORMATION_MESSAGE);
-
+                JOptionPane.showMessageDialog(null, "Has pasado de nivel!", "Enhorabuena!", JOptionPane.INFORMATION_MESSAGE);
             } catch (PacmanComidoException e) {
                 nivel.dibujar();
-
+                JOptionPane.showMessageDialog(null, "¡OH NO! Te han comido.", "GAME OVER", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println("¡Game Over! Te han comido.");
-                pacmanComido = true;
+                System.exit(0);
 
             } catch (SalirDelJuegoException e) {
                 System.out.println("Has elegido salir del juego.");
@@ -69,7 +68,6 @@ public class Principal {
 
                 nivel.gG();
                 System.exit(0);
-
             }
 
             nivelActual++;

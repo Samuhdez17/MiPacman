@@ -50,7 +50,9 @@ public class FantasmaListo extends Fantasma {
                 }
             }
 
-        } else {
+        }
+
+        if (debil) {
             try {
                 Direccion dir = Direccion.values()[random.nextInt(4)];
                 mover(dir);

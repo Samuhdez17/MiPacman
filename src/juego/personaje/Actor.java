@@ -15,11 +15,13 @@ public abstract class Actor implements Dibujable, Tickable {
     private Lienzo lienzo;
     protected Image imagen;
 
+    private final Posicion posicionInicial;
     protected Posicion posicion;
     protected Nivel nivel;
 
     public Actor(String nombreFicheroImagen, Lienzo lienzo, Nivel nivel, Posicion posicionInicial) {
-        this.posicion = posicionInicial;
+        this.posicionInicial = posicionInicial;
+        this.posicion = this.posicionInicial;
         this.nivel = nivel;
 
         setLienzo(lienzo);
@@ -36,6 +38,10 @@ public abstract class Actor implements Dibujable, Tickable {
 
     public Posicion getPosicion() {
         return posicion;
+    }
+
+    public Posicion getPosicionInicial() {
+        return posicionInicial;
     }
 
     public void mover(Direccion dir) throws MovimientoInvalidoException, SalirDelJuegoException {
