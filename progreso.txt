@@ -13,6 +13,6 @@ intentar medir el tiempo, para que cuando pase mucho rato spawnear un objeto que
 ultimo mensaje commit:
 Empezamos a hacer que PowerUp sea más util, ponemos la puntuación en la barra de la ventana para que sea más visible.
 
-TODO: hacer que power up se coma y de efectos en x tiempo;
+TODO: hacer que power up se coma y de efectos en x tiempo; cambiar los patrones de los mapas 2 y 3
 
 ERRORES:

@@ -23,7 +23,7 @@ public class Nivel implements Dibujable {
 
     protected EstadoJuego estado;
     protected Mapa mapa;
-    protected int nivelActual;
+    private final int nivelActual;
     protected PowerUp powerUp;
 
     protected Pacman pacman;
@@ -46,11 +46,12 @@ public class Nivel implements Dibujable {
     public PowerUp getPowerUp() {
         return powerUp;
     }
-
     public int getDuracionPwrUp() {
         return powerUp.getDuracionMax();
     }
-
+    public int getPuntuacion() {
+        return estado.getPuntuacion();
+    }
     public int getLimiteX() {
         return mapa.getLimiteX();
     }
@@ -298,14 +299,8 @@ public class Nivel implements Dibujable {
 
         pacman.dibujar();
 
-        for (Fantasma fantasma : fantasmas) {
-            fantasma.dibujar();
-        }
+        for (Fantasma fantasma : fantasmas) fantasma.dibujar();
 
         lienzo.volcar();
-    }
-
-    public int getPuntuacion() {
-        return estado.getPuntuacion();
     }
 }
