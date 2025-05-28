@@ -46,7 +46,7 @@ public class EstadoJuego implements Dibujable {
     public void tick(int tiempoEnPartida) {
         if (nivelActual.getPowerUp() != null) {
             if (nivelActual.pacmanComioPwrUp()) {
-                momentoPwrUp = tiempoEnPartida;
+                momentoPwrUp = tiempoEnPartida; // momento en el que se ha comido el power up
                 duracionPwrUp = nivelActual.getDuracionPwrUp();
                 variarInvencibilidad();
 

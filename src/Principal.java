@@ -5,11 +5,12 @@ import juego.excepciones.PacmanComidoException;
 import juego.excepciones.SalirDelJuegoException;
 import multimedia.*;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class Principal {
     private static final int TICK = 110; // 110 500
-    private static final int CAMBIO_NIVEL = 100;
+    private static final int CAMBIO_NIVEL = 200;
 
     public static void espera(int milisegundos) {
         try {
@@ -50,7 +51,8 @@ public class Principal {
                 }
 
                 nivel.dibujar();
-                espera(CAMBIO_NIVEL);
+
+                JOptionPane.showMessageDialog(ventana, "Completaste el nivel", "Siguiente nivel", JOptionPane.INFORMATION_MESSAGE);
 
             } catch (PacmanComidoException e) {
                 nivel.dibujar();
