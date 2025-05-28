@@ -46,8 +46,7 @@ public abstract class Actor implements Dibujable, Tickable {
             if (this instanceof Pacman) System.out.println("Chocaste con una pared!");
             else this.tick();
 
-        } else if (this instanceof FantasmaComun && nivel.esFantasma(new Posicion(nuevaX, nuevaY))) {
-            //TODO Verificar si el siguiente movimiento no sea la posicion anterior
+        } else if (this instanceof Fantasma && nivel.esFantasma(new Posicion(nuevaX, nuevaY))) {
             try {
                 mover(dir);
             } catch (StackOverflowError e) {

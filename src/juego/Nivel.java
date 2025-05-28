@@ -35,13 +35,9 @@ public class Nivel implements Dibujable {
         this.teclado = teclado;
         this.nivelActual = nivelActual;
 
-        estado = new EstadoJuego(this.lienzo, this);
+        estado = new EstadoJuego(lienzo, this);
 
         crearLaberinto(this.nivelActual);
-    }
-
-    public int getFantasmasPorNivel() {
-        return FANTASMAS_POR_NIVEL;
     }
 
     public int getNivelActual() {
@@ -49,6 +45,10 @@ public class Nivel implements Dibujable {
     }
     public PowerUp getPowerUp() {
         return powerUp;
+    }
+
+    public int getDuracionPwrUp() {
+        return powerUp.getDuracionMax();
     }
 
     public int getLimiteX() {
@@ -140,7 +140,7 @@ public class Nivel implements Dibujable {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
-                    if (i == 1) fantasmas.add(new FantasmaListo(lienzo, this, pacman.getPosicion()));
+                    if (i == 1) fantasmas.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
                     else fantasmas.add(new FantasmaComun(lienzo, this, i));
                 }
             }
@@ -150,7 +150,7 @@ public class Nivel implements Dibujable {
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
                     if (i == 1) fantasmas.add(new FantasmaComun(lienzo, this, i));
-                    else fantasmas.add(new FantasmaListo(lienzo, this, pacman.getPosicion()));
+                    else fantasmas.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
                 }
             }
         }
@@ -175,10 +175,6 @@ public class Nivel implements Dibujable {
         }
     }
 
-    public boolean verificarIntercambio(Fantasma fantasma) {
-        return fantasma.getPosicion().equals(pacman.getPosicion());
-    }
-
     public void tick(int tiempoTranscurrido) throws PacmanComidoException, SalirDelJuegoException, JugadorGanoJuegoException {
         pacman.tick();
 
@@ -187,19 +183,41 @@ public class Nivel implements Dibujable {
             mapa.retirarPunto(pacman.getPosicion());
         }
 
-        for (Fantasma fantasma : fantasmas) {
-            if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
-
-            fantasma.tick();
-
-            if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
-        }
+        fantasmasTick();
 
         generarPwrUp(nivelActual, tiempoTranscurrido);
 
         estado.tick(tiempoTranscurrido);
 
         if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
+    }
+
+    private void fantasmasTick() throws SalirDelJuegoException {
+        for (Fantasma fantasma : fantasmas) {
+            if (estado.pacmanInvencible()) {
+                fantasma.debilitar();
+
+                if (verificarIntercambio(fantasma)) fantasma.haSidoComido();
+
+                fantasma.tick();
+
+                if (verificarIntercambio(fantasma)) fantasma.haSidoComido();
+
+            } else {
+                fantasma.fortalecer();
+
+                if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
+
+                fantasma.tick();
+
+                if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
+            }
+
+        }
+    }
+
+    public boolean verificarIntercambio(Fantasma fantasma) {
+        return fantasma.getPosicion().equals(pacman.getPosicion());
     }
 
     private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
@@ -210,16 +228,16 @@ public class Nivel implements Dibujable {
         else if (nivelActual == 2) momentoAparicion = 5;
         else                       momentoAparicion = 6;
 
-        if (tiempoTranscurrido == momentoAparicion) {
+        if (tiempoTranscurrido == momentoAparicion) { // "Animación de aparición"
             powerUp = new PowerUp(lienzo, this);
 
         } else if (tiempoTranscurrido > momentoAparicion && powerUp != null) {
+            // Una vez asentado, borramos el punto de donde está y modificamos los puntos en mapa
             if (mapa.hayPunto(powerUp.getPosicion())) {
                 mapa.retirarPunto(powerUp.getPosicion());
                 estado.setPuntosEnMapa(mapa.getPuntosMapa());
             }
         }
-
     }
 
     public boolean esPwrUp(Posicion posicion) {
@@ -284,8 +302,10 @@ public class Nivel implements Dibujable {
             fantasma.dibujar();
         }
 
-        estado.dibujar();
-
         lienzo.volcar();
+    }
+
+    public int getPuntuacion() {
+        return estado.getPuntuacion();
     }
 }

@@ -30,16 +30,9 @@ public class PowerUp implements Dibujable {
     }
 
     private void setDuracionMax(int nivelActual) {
-        if      (nivelActual == 1) duracionMax = 4;
-        else if (nivelActual == 2) duracionMax = 5;
-        else                       duracionMax = 6;
-    }
-
-    public Posicion getPosicion() {
-        return posicion;
-    }
-    public int getDuracionMax() {
-        return duracionMax;
+        if      (nivelActual == 1) duracionMax = 10;
+        else if (nivelActual == 2) duracionMax = 6;
+        else                       duracionMax = 2;
     }
 
     private void setImagen(String nombreImagen) {
@@ -49,6 +42,13 @@ public class PowerUp implements Dibujable {
         } catch (IOException e) {
             throw new ErrorCargarImagenException(e);
         }
+    }
+    public Posicion getPosicion() {
+        return posicion;
+    }
+
+    public int getDuracionMax() {
+        return duracionMax;
     }
 
     private void generarPosicion(Nivel nivel) {

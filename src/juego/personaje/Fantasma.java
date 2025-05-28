@@ -4,15 +4,23 @@ import juego.Nivel;
 import multimedia.*;
 
 import java.util.Random;
+import java.util.Scanner;
 
 public abstract class Fantasma extends Actor {
     protected final Random random = new Random();
+
     private static final Posicion[] SPAWNS = {new Posicion(1,1), new Posicion(1,13), new Posicion(13,1)};
     private static final boolean[] SPAWNS_OCUPADOS = new boolean[SPAWNS.length];
+
+    private final String imagenInicial;
+
+    protected boolean debil = false;
+    protected boolean comido = false;
 
     public Fantasma(Lienzo lienzo, Nivel nivel, String imagen) {
         super(imagen, lienzo, nivel, new Posicion(0,0));
 
+        imagenInicial = imagen;
         generarPosicion();
     }
 
@@ -35,5 +43,21 @@ public abstract class Fantasma extends Actor {
                 break;
             }
         }
+    }
+
+    public void debilitar() {
+        debil = true;
+
+        setImagen("fantasmas/fantasma-debil.png");
+    }
+
+    public void fortalecer() {
+        debil = false;
+
+        setImagen(imagenInicial);
+    }
+
+    public void haSidoComido() {
+        comido = true;
     }
 }

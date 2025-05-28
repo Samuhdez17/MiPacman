@@ -11,10 +11,11 @@ public class EstadoJuego implements Dibujable {
     private final Nivel nivelActual;
 
     private int puntosEnMapa;
-    public int puntuacion;
+    private int puntuacion;
 
     private boolean invencibilidad = false;
     private int momentoPwrUp = 0;
+    private int duracionPwrUp = 0;
 
     public EstadoJuego(Lienzo lienzo, Nivel nivelActual) {
         setLienzo(lienzo);
@@ -23,6 +24,14 @@ public class EstadoJuego implements Dibujable {
 
     public void setPuntosEnMapa(int puntos) {
         this.puntosEnMapa = puntos;
+    }
+
+    public boolean pacmanInvencible() {
+        return invencibilidad;
+    }
+
+    public int getPuntuacion() {
+        return puntuacion;
     }
 
     public void decrementarPuntosEnMapa() {
@@ -37,10 +46,16 @@ public class EstadoJuego implements Dibujable {
     public void tick(int tiempoEnPartida) {
         if (nivelActual.getPowerUp() != null) {
             if (nivelActual.pacmanComioPwrUp()) {
-                nivelActual.eliminarPwrUp();
                 momentoPwrUp = tiempoEnPartida;
-                cambiarInvencibilidad();
+                duracionPwrUp = nivelActual.getDuracionPwrUp();
+                variarInvencibilidad();
+
+                nivelActual.eliminarPwrUp();
             }
+        }
+
+        if (invencibilidad) {
+            if (tiempoEnPartida - momentoPwrUp == duracionPwrUp) variarInvencibilidad();
         }
     }
 
@@ -48,7 +63,7 @@ public class EstadoJuego implements Dibujable {
         JOptionPane.showMessageDialog((Component) lienzo, "¡Felicidades! Has ganado el juego.", "Felicidades", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void cambiarInvencibilidad() {
+    public void variarInvencibilidad() {
         invencibilidad = !invencibilidad;
     }
 
@@ -62,6 +77,5 @@ public class EstadoJuego implements Dibujable {
     }
 
     public void dibujar() {
-        lienzo.escribirTexto(0, 0, "Puntuación: " + puntuacion, Color.GREEN);
     }
 }

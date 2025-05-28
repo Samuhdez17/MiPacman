@@ -37,6 +37,8 @@ public class Principal {
 
             try {
                 while (!nivel.pasarNivel()) {
+                    ventana.setTitle("PacMan     Puntuación: " + nivel.getPuntuacion());
+
                     int tiempoEnPartida = ((int) (System.currentTimeMillis() / 1000) - inicioPartida);
 
                     nivel.dibujar();

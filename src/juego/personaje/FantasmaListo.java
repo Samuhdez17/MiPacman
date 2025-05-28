@@ -9,35 +9,50 @@ public class FantasmaListo extends Fantasma {
     private static final String IMAGEN = "fantasmas/fantasma-listo.png";
     private final Posicion posPacman;
     private final Posicion actual;
+    private final int fantasmaId;
 
-    public FantasmaListo(Lienzo lienzo, Nivel nivel, Posicion posPacman) {
+    public FantasmaListo(Lienzo lienzo, Nivel nivel, Posicion posPacman, int fantasmaId) {
         super(lienzo, nivel, IMAGEN);
-
-        actual = getPosicion();
+        this.actual = getPosicion();
         this.posPacman = posPacman;
+        this.fantasmaId = fantasmaId;
     }
 
+
     public void tick() throws SalirDelJuegoException {
-        Direccion dir = null;
-        double distanciaMasCorta = Double.MAX_VALUE;
+        if (!debil) {
+            Direccion dir = null;
+            double distanciaMasCorta = Double.MAX_VALUE;
 
-        for (Direccion direccion : Direccion.values()) {
-            if (direccion != Direccion.Q) {
-                Posicion nuevaPosicion = actual.desplazarse(direccion);
+            for (Direccion direccion : Direccion.values()) {
+                if (direccion != Direccion.Q) {
+                    Posicion nuevaPosicion = actual.desplazarse(direccion);
 
-                if (nivel.esTransitable(nuevaPosicion)) {
-                    double distancia = nuevaPosicion.distanciaHaciaPacman(posPacman);
+                    if (nivel.esTransitable(nuevaPosicion)) {
+                        double distancia = nuevaPosicion.distanciaHastaPacman(posPacman);
 
-                    if (distancia < distanciaMasCorta) {
-                        distanciaMasCorta = distancia;
-                        dir = direccion;
+                        if (fantasmaId % 2 == 0) {
+                            distancia += 15; // Desfasamos la distancia artificialmente para ciertos fantasmas
+                        }
+
+                        if (distancia < distanciaMasCorta) {
+                            distanciaMasCorta = distancia;
+                            dir = direccion;
+                        }
                     }
                 }
             }
-        }
 
-        if (dir != null) {
+            if (dir != null) {
+                try {
+                    mover(dir);
+                } catch (MovimientoInvalidoException ignored) {
+                }
+            }
+
+        } else {
             try {
+                Direccion dir = Direccion.values()[random.nextInt(4)];
                 mover(dir);
             } catch (MovimientoInvalidoException ignored) {
             }
