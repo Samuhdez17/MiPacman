@@ -11,9 +11,7 @@ y otro en el que hayan 2 fantasmas que sepan la posición de pacman.
 intentar medir el tiempo, para que cuando pase mucho rato spawnear un objeto que te permita comer fantasmas y que estos aparezcan al rato. (bastante complicado pero lo miraré)
 
 ultimo mensaje commit:
-Se hace que FantasmaListo persiga a Pacman por fin, empezamos a darle utilidad al power up.
-
-No vamos a poner inercia, ya que con el movimiento en diagonal puedes esquivar al FantasmaListo
+Empezamos a hacer que PowerUp sea más util, ponemos la puntuación en la barra de la ventana para que sea más visible.
 
 TODO: hacer que power up se coma y de efectos en x tiempo;
 
