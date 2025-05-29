@@ -216,19 +216,28 @@ public class Nivel implements Dibujable {
             }
         }
 
-        for (int fantasma = 0; fantasma < fantasmasVivos.size() ; fantasma++) {
-            if (fantasmasVivos.get(fantasma).estaComido()) {
-                fantasmasVivos.get(fantasma).setMomentoComido(tiempoTranscurrido);
+        for (int fantasmaActual = 0 ; fantasmaActual < fantasmasVivos.size() ; fantasmaActual++) {
+            Fantasma fantasma = fantasmasVivos.get(fantasmaActual);
 
-                fantasmasComidos.add(fantasmasVivos.get(fantasma));
-                fantasmasVivos.remove(fantasmasVivos.get(fantasma));
+            if (fantasma.estaComido()) {
+                fantasma.setMomentoComido(tiempoTranscurrido);
+                fantasma.liberarPosicion(fantasma.getPosicionInicial());
+
+                fantasmasComidos.add(fantasma);
+                fantasmasVivos.remove(fantasma);
             }
         }
 
         if (!fantasmasComidos.isEmpty()) {
             for (int fantasma = 0 ; fantasma < fantasmasComidos.size() ; fantasma++) {
-                if (fantasmasComidos.get(fantasma).getMomentoComido() - tiempoTranscurrido >= 5) {
-                    fantasmasComidos.get(fantasma).liberarPosicion(fantasmasComidos.get(fantasma).getPosicionInicial());
+                Fantasma fantasmaComido = fantasmasComidos.get(fantasma);
+
+                if (tiempoTranscurrido - fantasmaComido.getMomentoComido() >= 5) {
+                    fantasmasVivos.add(fantasmaComido);
+                    fantasmasComidos.remove(fantasmaComido);
+
+                    fantasmaComido.revivir();
+                    fantasmaComido.reUbicar();
                 }
             }
         }
