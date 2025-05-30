@@ -142,7 +142,7 @@ public class Nivel implements Dibujable {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
-                    if (i == 1) fantasmasVivos.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
+                    if (i == 3) fantasmasVivos.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
                     else fantasmasVivos.add(new FantasmaComun(lienzo, this, i));
                 }
             }
@@ -151,7 +151,7 @@ public class Nivel implements Dibujable {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
-                    if (i == 1) fantasmasVivos.add(new FantasmaComun(lienzo, this, i));
+                    if (i == 1) fantasmasVivos.add(new FantasmaComun(lienzo, this));
                     else fantasmasVivos.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
                 }
             }

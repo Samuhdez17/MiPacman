@@ -11,7 +11,7 @@ public abstract class Fantasma extends Actor {
     private static final Posicion[] SPAWNS = {new Posicion(1,1), new Posicion(1,13), new Posicion(13,1)};
     private static final boolean[] SPAWNS_OCUPADOS = new boolean[SPAWNS.length];
 
-    private final String imagenInicial;
+    private String imagenInicial;
 
     protected boolean debil = false;
     protected boolean comido = false;
@@ -27,6 +27,10 @@ public abstract class Fantasma extends Actor {
 
     public int getDuracionComido() {
         return duracionComido;
+    }
+
+    public void setImagenInicial(String imagen) {
+        imagenInicial = imagen;
     }
 
     protected void generarPosicion() {

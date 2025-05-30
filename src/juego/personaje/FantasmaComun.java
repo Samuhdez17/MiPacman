@@ -13,6 +13,14 @@ public class FantasmaComun extends Fantasma {
         super(lienzo, nivel, numFantasma == 1 ? IMAGENES[0] : IMAGENES[1], 3);
     }
 
+    public FantasmaComun(Lienzo lienzo, Nivel nivel) {
+        super(lienzo, nivel, "fantasmas/fantasma-comun1.png", 3);
+
+        String imagenRandom = IMAGENES[random.nextInt(2)];
+        setImagen(imagenRandom);
+        setImagenInicial(imagenRandom);
+    }
+
     public void tick() throws SalirDelJuegoException {
         try {
             Direccion dir = Direccion.values()[random.nextInt(4)];
