@@ -50,10 +50,6 @@ public abstract class Fantasma extends Actor {
         }
     }
 
-    public void reUbicar() {
-        generarPosicion();
-    }
-
     public void debilitar() {
         debil = true;
 
@@ -72,8 +68,8 @@ public abstract class Fantasma extends Actor {
 
     public void revivir() {
         fortalecer();
-
         comido = false;
+        generarPosicion();
     }
 
     public boolean estaComido() {

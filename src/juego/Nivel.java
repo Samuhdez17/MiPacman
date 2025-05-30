@@ -236,7 +236,6 @@ public class Nivel implements Dibujable {
                     fantasmasComidos.remove(fantasmaComido);
 
                     fantasmaComido.revivir();
-                    fantasmaComido.reUbicar();
                 }
             }
         }
@@ -249,9 +248,9 @@ public class Nivel implements Dibujable {
     private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
         int momentoAparicion;
 
-        if      (nivelActual == 1) momentoAparicion = 40;
-        else if (nivelActual == 2) momentoAparicion = 1;
-        else                       momentoAparicion = 8;
+        if      (nivelActual == 1) momentoAparicion = 30;
+        else if (nivelActual == 2) momentoAparicion = 20;
+        else                       momentoAparicion = 15;
 
         if (tiempoTranscurrido == momentoAparicion) { // "Animación de aparición"
             powerUp = new PowerUp(lienzo, this);

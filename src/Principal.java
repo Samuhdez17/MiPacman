@@ -27,7 +27,7 @@ public class Principal {
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
 
-        int nivelActual = 2;
+        int nivelActual = 1;
 
         while (nivelActual <= 3) {
             int inicioPartida = (int) (System.currentTimeMillis() / 1000);
@@ -52,10 +52,11 @@ public class Principal {
                 nivel.dibujar();
                 espera(CAMBIO_NIVEL);
 
-                JOptionPane.showMessageDialog(null, "Has pasado de nivel!", "Enhorabuena!", JOptionPane.INFORMATION_MESSAGE);
+                mensajePasarNivel();
+
             } catch (PacmanComidoException e) {
                 nivel.dibujar();
-                JOptionPane.showMessageDialog(null, "¡OH NO! Te han comido.", "GAME OVER", JOptionPane.INFORMATION_MESSAGE);
+                mensajeTeHanComido();
                 System.out.println("¡Game Over! Te han comido.");
                 System.exit(0);
 
@@ -72,5 +73,13 @@ public class Principal {
 
             nivelActual++;
         }
+    }
+
+    private static void mensajeTeHanComido() {
+        JOptionPane.showMessageDialog(null, "¡OH NO! Te han comido.", "GAME OVER", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static void mensajePasarNivel() {
+        JOptionPane.showMessageDialog(null, "Has pasado de nivel!", "Enhorabuena!", JOptionPane.INFORMATION_MESSAGE);
     }
 }
