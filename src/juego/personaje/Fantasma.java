@@ -14,22 +14,19 @@ public abstract class Fantasma extends Actor {
     private final String imagenInicial;
 
     protected boolean debil = false;
-    private int momentoComido = 0;
     protected boolean comido = false;
+    private final int duracionComido;
 
-    public Fantasma(Lienzo lienzo, Nivel nivel, String imagen) {
+    public Fantasma(Lienzo lienzo, Nivel nivel, String imagen, int duracionComido) {
         super(imagen, lienzo, nivel, new Posicion(0,0));
 
+        this.duracionComido = duracionComido;
         imagenInicial = imagen;
         generarPosicion();
     }
 
-    public int getMomentoComido() {
-        return momentoComido;
-    }
-
-    public void setMomentoComido(int momentoComido) {
-        this.momentoComido = momentoComido;
+    public int getDuracionComido() {
+        return duracionComido;
     }
 
     protected void generarPosicion() {
@@ -74,8 +71,9 @@ public abstract class Fantasma extends Actor {
     }
 
     public void revivir() {
+        fortalecer();
+
         comido = false;
-        setMomentoComido(0);
     }
 
     public boolean estaComido() {

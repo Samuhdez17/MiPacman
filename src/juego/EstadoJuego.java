@@ -16,10 +16,18 @@ public class EstadoJuego implements Dibujable {
     private boolean invencibilidad = false;
     private int momentoPwrUp = 0;
     private int duracionPwrUp = 0;
+    private int invencibilidadAcaba;
 
     public EstadoJuego(Lienzo lienzo, Nivel nivelActual) {
         setLienzo(lienzo);
         this.nivelActual = nivelActual;
+    }
+
+    public int getPuntuacion() {
+        return puntuacion;
+    }
+    public int getInvencibilidadAcaba() {
+        return invencibilidadAcaba;
     }
 
     public void setPuntosEnMapa(int puntos) {
@@ -28,10 +36,6 @@ public class EstadoJuego implements Dibujable {
 
     public boolean pacmanInvencible() {
         return invencibilidad;
-    }
-
-    public int getPuntuacion() {
-        return puntuacion;
     }
 
     public void decrementarPuntosEnMapa() {
@@ -56,6 +60,7 @@ public class EstadoJuego implements Dibujable {
 
         if (invencibilidad) {
             if (tiempoEnPartida - momentoPwrUp == duracionPwrUp) variarInvencibilidad();
+            invencibilidadAcaba = tiempoEnPartida;
         }
     }
 

@@ -216,11 +216,10 @@ public class Nivel implements Dibujable {
             }
         }
 
-        for (int fantasmaActual = 0 ; fantasmaActual < fantasmasVivos.size() ; fantasmaActual++) {
+        for (int fantasmaActual = 0; fantasmaActual < fantasmasVivos.size(); fantasmaActual++) {
             Fantasma fantasma = fantasmasVivos.get(fantasmaActual);
 
             if (fantasma.estaComido()) {
-                fantasma.setMomentoComido(tiempoTranscurrido);
                 fantasma.liberarPosicion(fantasma.getPosicionInicial());
 
                 fantasmasComidos.add(fantasma);
@@ -228,11 +227,11 @@ public class Nivel implements Dibujable {
             }
         }
 
-        if (!fantasmasComidos.isEmpty()) {
-            for (int fantasma = 0 ; fantasma < fantasmasComidos.size() ; fantasma++) {
+        if (!estado.pacmanInvencible() && !fantasmasComidos.isEmpty()) {
+            for (int fantasma = 0; fantasma < fantasmasComidos.size(); fantasma++) {
                 Fantasma fantasmaComido = fantasmasComidos.get(fantasma);
 
-                if (tiempoTranscurrido - fantasmaComido.getMomentoComido() >= 5) {
+                if (tiempoTranscurrido - estado.getInvencibilidadAcaba() >= fantasmaComido.getDuracionComido()) {
                     fantasmasVivos.add(fantasmaComido);
                     fantasmasComidos.remove(fantasmaComido);
 
@@ -250,9 +249,9 @@ public class Nivel implements Dibujable {
     private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
         int momentoAparicion;
 
-        if      (nivelActual == 1) momentoAparicion = 1;
-        else if (nivelActual == 2) momentoAparicion = 5;
-        else                       momentoAparicion = 6;
+        if      (nivelActual == 1) momentoAparicion = 40;
+        else if (nivelActual == 2) momentoAparicion = 1;
+        else                       momentoAparicion = 8;
 
         if (tiempoTranscurrido == momentoAparicion) { // "Animación de aparición"
             powerUp = new PowerUp(lienzo, this);

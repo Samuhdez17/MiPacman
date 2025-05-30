@@ -27,7 +27,7 @@ public class Principal {
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
 
-        int nivelActual = 1;
+        int nivelActual = 2;
 
         while (nivelActual <= 3) {
             int inicioPartida = (int) (System.currentTimeMillis() / 1000);

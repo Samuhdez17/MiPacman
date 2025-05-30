@@ -11,8 +11,11 @@ public class FantasmaListo extends Fantasma {
     private final Posicion actual;
     private final int fantasmaId;
 
+    private int ticksEnPartida = 0;
+
     public FantasmaListo(Lienzo lienzo, Nivel nivel, Posicion posPacman, int fantasmaId) {
-        super(lienzo, nivel, IMAGEN);
+        super(lienzo, nivel, IMAGEN, 10);
+
         this.actual = getPosicion();
         this.posPacman = posPacman;
         this.fantasmaId = fantasmaId;
@@ -20,44 +23,48 @@ public class FantasmaListo extends Fantasma {
 
 
     public void tick() throws SalirDelJuegoException {
-        if (!debil) {
-            Direccion dir = null;
-            double distanciaMasCorta = Double.MAX_VALUE;
+        if (ticksEnPartida % 5 != 0) {
+            if (!debil) {
+                Direccion dir = null;
+                double distanciaMasCorta = Double.MAX_VALUE;
 
-            for (Direccion direccion : Direccion.values()) {
-                if (direccion != Direccion.Q) {
-                    Posicion nuevaPosicion = actual.desplazarse(direccion);
+                for (Direccion direccion : Direccion.values()) {
+                    if (direccion != Direccion.Q) {
+                        Posicion nuevaPosicion = actual.desplazarse(direccion);
 
-                    if (nivel.esTransitable(nuevaPosicion)) {
-                        double distancia = nuevaPosicion.distanciaHastaPacman(posPacman);
+                        if (nivel.esTransitable(nuevaPosicion)) {
+                            double distancia = nuevaPosicion.distanciaHastaPacman(posPacman);
 
-                        if (fantasmaId % 2 == 0) {
-                            distancia += 15; // Desfasamos la distancia artificialmente para ciertos fantasmas
-                        }
+                            if (fantasmaId % 2 == 0) {
+                                distancia += 15; // Desfasamos la distancia artificialmente para ciertos fantasmas
+                            }
 
-                        if (distancia < distanciaMasCorta) {
-                            distanciaMasCorta = distancia;
-                            dir = direccion;
+                            if (distancia < distanciaMasCorta) {
+                                distanciaMasCorta = distancia;
+                                dir = direccion;
+                            }
                         }
                     }
                 }
+
+                if (dir != null) {
+                    try {
+                        mover(dir);
+                    } catch (MovimientoInvalidoException ignored) {
+                    }
+                }
+
             }
 
-            if (dir != null) {
+            if (debil) {
                 try {
+                    Direccion dir = Direccion.values()[random.nextInt(4)];
                     mover(dir);
                 } catch (MovimientoInvalidoException ignored) {
                 }
             }
-
         }
 
-        if (debil) {
-            try {
-                Direccion dir = Direccion.values()[random.nextInt(4)];
-                mover(dir);
-            } catch (MovimientoInvalidoException ignored) {
-            }
-        }
+        ticksEnPartida++;
     }
 }
