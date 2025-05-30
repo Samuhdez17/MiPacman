@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Principal {
-    private static final int TICK = 120; // 110 500
+    private static final int TICK = 100; // 120 10000
     private static final int CAMBIO_NIVEL = 200;
 
     public static void espera(int milisegundos) {
@@ -27,7 +27,7 @@ public class Principal {
 
         VentanaMultimedia ventana = new VentanaMultimedia("PacMan", anchoVentana, altoVentana, tamPixel, colorFondo);
 
-        int nivelActual = 3;
+        int nivelActual = 1;
 
         while (nivelActual <= 3) {
             int inicioPartida = (int) (System.currentTimeMillis() / 1000);

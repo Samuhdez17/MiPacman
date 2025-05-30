@@ -14,7 +14,7 @@ public class FantasmaListo extends Fantasma {
     private int ticksEnPartida = 0;
 
     public FantasmaListo(Lienzo lienzo, Nivel nivel, Posicion posPacman, int fantasmaId) {
-        super(lienzo, nivel, IMAGEN, 6);
+        super(lienzo, nivel, IMAGEN, 10);
 
         this.actual = getPosicion();
         this.posPacman = posPacman;

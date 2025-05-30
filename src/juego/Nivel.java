@@ -139,7 +139,7 @@ public class Nivel implements Dibujable {
             }
 
             case 2 -> {
-                pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
+                pacman = new Pacman(lienzo, teclado, this, new Posicion(12, 12));
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
                     if (i == 3) fantasmasVivos.add(new FantasmaListo(lienzo, this, pacman.getPosicion(), i));
@@ -148,7 +148,7 @@ public class Nivel implements Dibujable {
             }
 
             case 3 -> {
-                pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
+                pacman = new Pacman(lienzo, teclado, this, new Posicion(7, 7));
 
                 for (int i = 1 ; i <= FANTASMAS_POR_NIVEL ; i++) {
                     if (i == 1) fantasmasVivos.add(new FantasmaComun(lienzo, this));
@@ -156,6 +156,8 @@ public class Nivel implements Dibujable {
                 }
             }
         }
+
+        if (mapa.hayPunto(pacman.getPosicion())) mapa.retirarPunto(pacman.getPosicion());
 
         fantasmaLiberarPosiciones();
     }
@@ -192,6 +194,8 @@ public class Nivel implements Dibujable {
         estado.tick(tiempoTranscurrido);
 
         if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
+
+        System.out.printf("Puntos en mapa: %d\n", mapa.getPuntosMapa());
     }
 
     private void fantasmasTick(int tiempoTranscurrido) throws SalirDelJuegoException {
@@ -248,9 +252,9 @@ public class Nivel implements Dibujable {
     private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
         int momentoAparicion;
 
-        if      (nivelActual == 1) momentoAparicion = 30;
-        else if (nivelActual == 2) momentoAparicion = 20;
-        else                       momentoAparicion = 15;
+        if      (nivelActual == 1) momentoAparicion = 20;
+        else if (nivelActual == 2) momentoAparicion = 15;
+        else                       momentoAparicion = 10;
 
         if (tiempoTranscurrido == momentoAparicion) { // "Animación de aparición"
             powerUp = new PowerUp(lienzo, this);

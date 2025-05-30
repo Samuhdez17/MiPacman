@@ -22,7 +22,7 @@ public class PowerUp implements Dibujable {
     public PowerUp(Lienzo lienzo, Nivel nivel) {
         setLienzo(lienzo);
 
-        if (nivel.getNivelActual() == 2) setImagen("champi.png");
+        if (nivel.getNivelActual() == 2) setImagen("estrella.png");
         else                             setImagen("pwr-up.png");
 
         setDuracionMax(nivel.getNivelActual());
@@ -30,9 +30,9 @@ public class PowerUp implements Dibujable {
     }
 
     private void setDuracionMax(int nivelActual) {
-        if      (nivelActual == 1) duracionMax = 5;
-        else if (nivelActual == 2) duracionMax = 7;
-        else                       duracionMax = 9;
+        if      (nivelActual == 1) duracionMax = 7;
+        else if (nivelActual == 2) duracionMax = 10;
+        else                       duracionMax = 15;
     }
 
     private void setImagen(String nombreImagen) {
