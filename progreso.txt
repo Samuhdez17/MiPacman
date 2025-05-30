@@ -11,8 +11,8 @@ y otro en el que hayan 2 fantasmas que sepan la posición de pacman.
 intentar medir el tiempo, para que cuando pase mucho rato spawnear un objeto que te permita comer fantasmas y que estos aparezcan al rato. (bastante complicado pero lo miraré)
 
 ultimo mensaje commit:
-Ya nos comemos a los fantasmas débiles
+Cambio en los patrones de los mapas, todo funciona correcto, pasamos de nivel y los fantasmas se comen bien y aparecen al rato
 
-TODO: hacer que power up se coma y de efectos en x tiempo; que los fantasmas aparezcan al rato; cambiar los patrones de los mapas 2 y 3
+TODO:
 
-ERRORES:
+ERRORES: Movimiento diagonal en pacman
