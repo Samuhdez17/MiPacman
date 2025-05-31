@@ -11,8 +11,8 @@ y otro en el que hayan 2 fantasmas que sepan la posición de pacman.
 intentar medir el tiempo, para que cuando pase mucho rato spawnear un objeto que te permita comer fantasmas y que estos aparezcan al rato. (bastante complicado pero lo miraré)
 
 ultimo mensaje commit:
-Cambio en los patrones de los mapas, todo funciona correcto, pasamos de nivel y los fantasmas se comen bien y aparecen al rato
+Corregimos el movimiento en diagonal de pacman y el error de no poder pasar de nivel.
 
-TODO:
+TODO: Documentación de Nivel y PowerUp
 
-ERRORES: Movimiento diagonal en pacman
+ERRORES:
