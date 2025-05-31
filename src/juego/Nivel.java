@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 public class Nivel implements Dibujable {
     private BufferedReader lecturaPatronMapa;
     private Scanner entrada;
@@ -128,6 +127,7 @@ public class Nivel implements Dibujable {
 
     private void situarPersonajes(int nivel) {
         fantasmasVivos.clear();
+        fantasmasComidos.clear();
 
         switch (nivel) {
             case 1 -> {
@@ -164,8 +164,10 @@ public class Nivel implements Dibujable {
 
     /* Como se acaba de crear el fantasma, su posición inicial es la de alguna de las esquinas */
     private void fantasmaLiberarPosiciones() {
-        for (Fantasma fantasma : fantasmasVivos) {
-            fantasma.liberarPosicion(fantasma.getPosicionInicial());
+        if (!fantasmasVivos.isEmpty()) {
+            for (Fantasma fantasma : fantasmasVivos) {
+                fantasma.liberarPosicion(fantasma.getPosicionInicial());
+            }
         }
     }
 
@@ -199,15 +201,22 @@ public class Nivel implements Dibujable {
     }
 
     private void fantasmasTick(int tiempoTranscurrido) throws SalirDelJuegoException {
-        for (Fantasma fantasma : fantasmasVivos) {
+        revivirFantasmasComidos(tiempoTranscurrido);
+
+        for (int fantasmaActual = 0 ; fantasmaActual < fantasmasVivos.size() ; fantasmaActual++) {
+            Fantasma fantasma = fantasmasVivos.get(fantasmaActual);
+
             if (estado.pacmanInvencible()) {
                 fantasma.debilitar();
 
-                if (verificarIntercambio(fantasma)) fantasma.haSidoComido();
+                if (verificarIntercambio(fantasma)) {
+                    pacmanComeFantasma(fantasma);
+                    continue;
+                }
 
                 fantasma.tick();
 
-                if (verificarIntercambio(fantasma)) fantasma.haSidoComido();
+                if (verificarIntercambio(fantasma)) pacmanComeFantasma(fantasma);
 
             } else {
                 fantasma.fortalecer();
@@ -219,30 +228,29 @@ public class Nivel implements Dibujable {
                 if (verificarIntercambio(fantasma)) throw new PacmanComidoException();
             }
         }
+    }
 
-        for (int fantasmaActual = 0; fantasmaActual < fantasmasVivos.size(); fantasmaActual++) {
-            Fantasma fantasma = fantasmasVivos.get(fantasmaActual);
+    private void revivirFantasmasComidos(int tiempoTranscurrido) {
+        if (estado.pacmanInvencible() || fantasmasComidos.isEmpty()) return;
+        
 
-            if (fantasma.estaComido()) {
-                fantasma.liberarPosicion(fantasma.getPosicionInicial());
+        for (int fantasmaActual = 0 ; fantasmaActual < fantasmasComidos.size() ; fantasmaActual++) {
+            Fantasma fantasmaComido = fantasmasComidos.get(fantasmaActual);
 
-                fantasmasComidos.add(fantasma);
-                fantasmasVivos.remove(fantasma);
+            if (tiempoTranscurrido - estado.getInvencibilidadAcaba() >= fantasmaComido.getDuracionComido()) {
+                fantasmasComidos.remove(fantasmaComido);
+                fantasmaComido.revivir();
+                fantasmasVivos.add(fantasmaComido);
             }
         }
+    }
 
-        if (!estado.pacmanInvencible() && !fantasmasComidos.isEmpty()) {
-            for (int fantasma = 0; fantasma < fantasmasComidos.size(); fantasma++) {
-                Fantasma fantasmaComido = fantasmasComidos.get(fantasma);
 
-                if (tiempoTranscurrido - estado.getInvencibilidadAcaba() >= fantasmaComido.getDuracionComido()) {
-                    fantasmasVivos.add(fantasmaComido);
-                    fantasmasComidos.remove(fantasmaComido);
+    private void pacmanComeFantasma(Fantasma fantasma) {
+        fantasma.liberarPosicion(fantasma.getPosicionInicial());
 
-                    fantasmaComido.revivir();
-                }
-            }
-        }
+        fantasmasComidos.add(fantasma);
+        fantasmasVivos.remove(fantasma);
     }
 
     public boolean verificarIntercambio(Fantasma fantasma) {
@@ -252,9 +260,9 @@ public class Nivel implements Dibujable {
     private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
         int momentoAparicion;
 
-        if      (nivelActual == 1) momentoAparicion = 20;
-        else if (nivelActual == 2) momentoAparicion = 15;
-        else                       momentoAparicion = 10;
+        if      (nivelActual == 1) momentoAparicion = 1; //20
+        else if (nivelActual == 2) momentoAparicion = 1; //15
+        else                       momentoAparicion = 1; //10
 
         if (tiempoTranscurrido == momentoAparicion) { // "Animación de aparición"
             powerUp = new PowerUp(lienzo, this);

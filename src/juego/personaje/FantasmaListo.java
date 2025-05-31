@@ -5,6 +5,9 @@ import juego.excepciones.MovimientoInvalidoException;
 import juego.excepciones.SalirDelJuegoException;
 import multimedia.Lienzo;
 
+/** Esta clase es un tipo de fantasma el cual sabe la posición de pacman y se mueve basándose en su posición para acercarse a él.
+ * Aunque parezca listo, este se puede quedar atascado para darle tiempo al jugador para planificar su siguiente movimiento.
+ */
 public class FantasmaListo extends Fantasma {
     private static final String IMAGEN = "fantasmas/fantasma-listo.png";
     private final Posicion posPacman;
@@ -13,6 +16,14 @@ public class FantasmaListo extends Fantasma {
 
     private int ticksEnPartida = 0;
 
+    /** Constructor
+     * En este constructor, se le indica un ID al fantasma para que el segundo vaya con más retraso para evitar sobre posicionamiento entre fantasmas.
+     *
+     * @param lienzo        Lienzo en el que dibujarse, este se pasa a la clase superior.
+     * @param nivel         Nivel en el que se encuentra, este se pasa a la clase superior.
+     * @param posPacman     Posición del jugador para perseguir.
+     * @param fantasmaId    ID del fantasma en cuestión.
+     */
     public FantasmaListo(Lienzo lienzo, Nivel nivel, Posicion posPacman, int fantasmaId) {
         super(lienzo, nivel, IMAGEN, 10);
 
@@ -21,7 +32,13 @@ public class FantasmaListo extends Fantasma {
         this.fantasmaId = fantasmaId;
     }
 
-
+    /** Tick
+     * Para hacer al fantasma más lento, se le hace el módulo de 5 para que se mueva 3 veces de 5.
+     * Primero se observa si está débil o no, en caso de estarlo, se mueve de manera aleatoria.
+     * En caso contrario, compara la distancia que hay hacia pacman en todas las direcciones para saber cuál es la mejor.
+     *
+     * @throws SalirDelJuegoException Al ser la clase Actor tickable, este implementa la excepción, ya que el jugador puede decidir salir del juego.
+     */
     public void tick() throws SalirDelJuegoException {
         if (ticksEnPartida % 5 != 0) {
             if (!debil) {
@@ -36,7 +53,7 @@ public class FantasmaListo extends Fantasma {
                             double distancia = nuevaPosicion.distanciaHastaPacman(posPacman);
 
                             if (fantasmaId % 2 == 0) {
-                                distancia += 15; // Desfasamos la distancia artificialmente para ciertos fantasmas
+                                distancia += 15; // Desfasamos la distancia para generar separación entre los fantasmas
                             }
 
                             if (distancia < distanciaMasCorta) {

@@ -9,6 +9,15 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+/** Esta clase genera un mapa dependiendo del nivel en el que se encuentre el jugador.
+ * Tiene:
+ *  - Puntos totales.
+ *  - Patrón de laberinto.
+ *  - Imagen para el suelo.
+ *  - Imagen para los muros.
+ *  - Imagen para las monedas.
+ *  - Lienzo en el que representarse.
+ */
 public class Mapa implements Dibujable {
     private int puntosEnMapa = 0;
 
@@ -19,6 +28,11 @@ public class Mapa implements Dibujable {
 
     private Lienzo lienzo;
 
+    /** Constructor.
+     * Se le indica el lienzo en el que dibujarse.
+     *
+     * @param lienzo Lienzo en el que dibujarse.
+     */
     public Mapa(Lienzo lienzo) {
         setLienzo(lienzo);
     }
@@ -46,10 +60,6 @@ public class Mapa implements Dibujable {
         return getAlto() - 1;
     }
 
-    // Estos get y set son para "traducir" el sistema de coordenadas x, y que se utiliza
-    // a lo largo de todo el programa, al sistema de coordenadas de filas y columnas
-    // que se utiliza en la matriz de chars.
-
     private char getContenidoMapa(int x, int y) {
         return laberinto[y][x];
     }
@@ -74,6 +84,12 @@ public class Mapa implements Dibujable {
         this.imagenSuelo = imagenSuelo;
     }
 
+    /** Método para asignar los spraits del mapa.
+     * Este es usado por la clase Nivel, al establecerse el nivel en el que se va a jugar, se le indica al mapa para que sepa que imágenes usar.
+     *
+     * @param numMapa Número del mapa en el que se encuentra.
+     * @see Nivel#crearLaberinto(int)
+     */
     public void asignarSprites(int numMapa) {
         switch (numMapa) {
             case 1 -> {
@@ -111,6 +127,9 @@ public class Mapa implements Dibujable {
         }
     }
 
+    /** Método para generar puntos en el mapa.
+     * Tras haber generado el mapa con el laberinto, se rellenan los huecos en blanco por puntos.
+     */
     public void generarPuntos() {
         for (int x = 0; x < laberinto.length; x++) {
             for (int y = 0; y < laberinto[0].length; y++) {
@@ -127,6 +146,7 @@ public class Mapa implements Dibujable {
         puntosEnMapa--;
     }
 
+    /* Indica si no hay muro */
     public boolean esTransitable(Posicion posicion) {
         int x = posicion.getX();
         int y = posicion.getY();
@@ -142,6 +162,7 @@ public class Mapa implements Dibujable {
         return getContenidoMapa(posicion) == '·';
     }
 
+    /* Carga el suelo, y en caso de requerirlo, el muro o moneda correspondiente */
     public void dibujar() {
         for (int x = 0; x < getAncho(); x++) {
             for (int y = 0; y < getAlto(); y++) {

@@ -37,7 +37,7 @@ public class Principal {
 
             try {
                 while (!nivel.pasarNivel()) {
-                    ventana.setTitle("PacMan     Puntuación: " + nivel.getPuntuacion());
+                    actualizarPuntuacion(ventana, nivel);
 
                     int tiempoEnPartida = ((int) (System.currentTimeMillis() / 1000) - inicioPartida);
 
@@ -49,6 +49,7 @@ public class Principal {
                     espera(TICK);
                 }
 
+                actualizarPuntuacion(ventana, nivel);
                 nivel.dibujar();
                 espera(CAMBIO_NIVEL);
 
@@ -65,6 +66,7 @@ public class Principal {
                 System.exit(0);
 
             } catch (JugadorGanoJuegoException e) {
+                actualizarPuntuacion(ventana, nivel);
                 nivel.dibujar();
 
                 nivel.gG();
@@ -73,6 +75,10 @@ public class Principal {
 
             nivelActual++;
         }
+    }
+
+    private static void actualizarPuntuacion(VentanaMultimedia ventana, Nivel nivel) {
+        ventana.setTitle("PacMan     Puntuación: " + nivel.getPuntuacion());
     }
 
     private static void mensajeTeHanComido() {
