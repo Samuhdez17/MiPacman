@@ -13,6 +13,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/** Clase principal del juego.
+ * Esta clase crea al mapa, el power up, el estado del juego y sitúa a los personajes.
+ * GameMaster llama a la clase indicando el nivel que queremos generar y esta clase hace el resto, la magia.
+ */
 public class Nivel implements Dibujable {
     private BufferedReader lecturaPatronMapa;
     private Scanner entrada;
@@ -30,6 +34,15 @@ public class Nivel implements Dibujable {
     protected ArrayList<Fantasma> fantasmasVivos = new ArrayList<>();
     protected ArrayList<Fantasma> fantasmasComidos = new ArrayList<>();
 
+    /** Constructor
+     * Se guarda el lienzo, el teclado y el nivel actual, para poder crear los personajes, el mapa y el estado del juego con esos datos.
+     * Primero se crea el estado, luego se hace el mapa y ya por último se sitúan los personajes.
+     *
+     * @param lienzo        Lienzo en el que se van a representar las cosas.
+     * @param teclado       Teclado que usará pacman para comunicarse con el usuario.
+     * @param nivelActual   Nivel en el que se encuentra.
+     * @see #crearMapa(int) Para empezar la cadena.
+     */
     public Nivel(Lienzo lienzo, Teclado teclado, int nivelActual) {
         setLienzo(lienzo);
         this.teclado = teclado;
@@ -37,7 +50,7 @@ public class Nivel implements Dibujable {
 
         estado = new EstadoJuego(lienzo, this);
 
-        crearLaberinto(this.nivelActual);
+        crearMapa(this.nivelActual);
     }
 
     public int getNivelActual() {
@@ -63,20 +76,31 @@ public class Nivel implements Dibujable {
         powerUp = null;
     }
 
-    private void crearLaberinto(int nivel) {
-        mapa = new Mapa(lienzo);
-        leerLaberinto(nivel);
+    /** Método para crear el mapa.
+     *
+     * @param nivel Nivel que queremos cargar
+     * @see #leerLaberinto(int) <-- Para continuar la cadena.
+     */
+    private void crearMapa(int nivel) {
+        mapa = new Mapa(lienzo); // Hacemos el mapa
+        leerLaberinto(nivel);    // Leemos el laberinto
 
-        cargarLaberinto();
-        mapa.generarPuntos();
-        estado.setPuntosEnMapa(mapa.getPuntosMapa());
-        mapa.asignarSprites(nivel);
+        cargarLaberinto();       // Cargamos el laberinto en nuestro mapa
+        mapa.generarPuntos();    // Generamos los puntos en el mapa
+        estado.setPuntosEnMapa(mapa.getPuntosMapa()); // Le decimos al estado los puntos que hay en el mapa
+        mapa.asignarSprites(nivel); // Le decimos al mapa que asigne los sprites correspondientes
 
-        situarPersonajes(nivel);
+        situarPersonajes(nivel); // Situamos a los personajes en su sitio con respecto al nivel que estamos creando
 
-        cerrarLectores();
+        cerrarLectores(); // Cerramos los lectores de archivos
     }
 
+    /** Método para leer el patrón del mapa que queremos jugar.
+     * Abrimos los lectores y guardamos el patron en un Scanner.
+     *
+     * @param numMapa Número del mapa que queremos generar.
+     * @see #cargarLaberinto() <-- Para continuar la cadena.
+     */
     private void leerLaberinto(int numMapa) {
         switch (numMapa) {
             case 1 -> {
@@ -105,10 +129,13 @@ public class Nivel implements Dibujable {
                     throw new ErrorCargarMapaException(e);
                 }
             }
-
         }
     }
 
+    /** Método para cargar el laberinto en el mapa.
+     * Se lee cada linea del Scanner y lo vamos asignando en la matriz de chars que tenemos en el mapa.
+     * @see Mapa#asignarSprites(int) <-- Para continuar la cadena.
+     */
     private void cargarLaberinto() {
         String linea;
         int fila = 0;
@@ -125,11 +152,16 @@ public class Nivel implements Dibujable {
         }
     }
 
+    /** Método para crear y situar a los personajes dentro del mapa.
+     * Aquí se termina la cadena, el siguiente paso es cerrar los lectores del patrón de laberinto.
+     *
+     * @param nivel Posición y tipos dependiendo del nivel en el que nos encontremos
+     */
     private void situarPersonajes(int nivel) {
-        fantasmasVivos.clear();
-        fantasmasComidos.clear();
+        fantasmasVivos.clear();    // |
+        fantasmasComidos.clear();  // |_> Se limpian los ArrayList en caso de haber otros fantasmas de niveles anteriores
 
-        switch (nivel) {
+        switch (nivel) { // Situamos a pacman y hacemos los fantasmas correspondientes al nivel en el que estemos
             case 1 -> {
                 pacman = new Pacman(lienzo, teclado, this, new Posicion(6, 7));
 
@@ -157,12 +189,14 @@ public class Nivel implements Dibujable {
             }
         }
 
-        if (mapa.hayPunto(pacman.getPosicion())) mapa.retirarPunto(pacman.getPosicion());
+        if (mapa.hayPunto(pacman.getPosicion())) mapa.retirarPunto(pacman.getPosicion()); // Quitamos el punto que ocupa pacman en el mapa
 
         fantasmaLiberarPosiciones();
     }
 
-    /* Como se acaba de crear el fantasma, su posición inicial es la de alguna de las esquinas */
+    /** Método para liberar las posiciones de spawn de los fantasmas.
+     * Se cogen los fantasmas uno a uno para liberar la posición que han usado para hacer spawn.
+     */
     private void fantasmaLiberarPosiciones() {
         if (!fantasmasVivos.isEmpty()) {
             for (Fantasma fantasma : fantasmasVivos) {
@@ -181,7 +215,23 @@ public class Nivel implements Dibujable {
         }
     }
 
-    public void tick(int tiempoTranscurrido) throws PacmanComidoException, SalirDelJuegoException, JugadorGanoJuegoException {
+    /** Tick.
+     * Pasos:
+     *  - Pacman se mueve
+     *  - Si donde está pacman hay un punto se quita y le aumentamos la puntuación a pacman
+     *  - Los fantasmas hacen tick
+     *  - Se mira el tiempo para ver si se tiene que generar el power up para pacman
+     *  - Estado hace tick
+     *  - Se revisa que el jugador haya ganado el juego completo
+     *
+     * @param tiempoEnPartida Momento en el que se encuentra el juego.
+     * @throws PacmanComidoException Excepción para saber si el jugador ha sido comido.
+     * @throws SalirDelJuegoException Excepción para saber si el jugador ha salido del juego.
+     * @throws JugadorGanoJuegoException Excepción para saber si el jugador ha ganado el juego.
+     * @see #fantasmasTick(int) Para ver como hacemos tick a los fantasmas.
+     * @see #generarPwrUp(int, int) Para ver como ver si generamos el power up.
+     */
+    public void tick(int tiempoEnPartida) throws PacmanComidoException, SalirDelJuegoException, JugadorGanoJuegoException {
         pacman.tick();
 
         if (mapa.hayPunto(pacman.getPosicion())) {
@@ -189,17 +239,27 @@ public class Nivel implements Dibujable {
             mapa.retirarPunto(pacman.getPosicion());
         }
 
-        fantasmasTick(tiempoTranscurrido);
+        fantasmasTick(tiempoEnPartida);
 
-        generarPwrUp(nivelActual, tiempoTranscurrido);
+        generarPwrUp(nivelActual, tiempoEnPartida);
 
-        estado.tick(tiempoTranscurrido);
+        estado.tick(tiempoEnPartida);
 
         if (nivelActual == 3 && estado.todosPuntosComidos()) throw new JugadorGanoJuegoException();
-
-        System.out.printf("Puntos en mapa: %d\n", mapa.getPuntosMapa());
     }
 
+    /** Método para hacer tick a los fantasmas.
+     * Pasos:
+     *  - Revisamos si hay que revivir a algún fantasma.
+     *  - Miramos en el ArrayList de los fantasmas vivos para hacer tick a cada uno.
+     *  - Si pacman es invencible, debilitamos al fantasma y si colisiona con pacman, se dice que está comido.
+     *  - Si pacman no es invencible, fortalecemos al fantasma y si colisiona con pacman, se dice que pacman ha sido comido.
+     *
+     * @param tiempoTranscurrido Parámetro para ver si hay que revivir a algún fantasma.
+     * @throws SalirDelJuegoException Excepción para saber si el jugador ha salido del juego.
+     * @see #pacmanComeFantasma(Fantasma) <-- Para ver como se hace que pacman se coma al fantasma
+     * @see #revivirFantasmasComidos(int) <-- Para ver como se revisa si hay que revivir a algún fantasma.
+     */
     private void fantasmasTick(int tiempoTranscurrido) throws SalirDelJuegoException {
         revivirFantasmasComidos(tiempoTranscurrido);
 
@@ -230,9 +290,18 @@ public class Nivel implements Dibujable {
         }
     }
 
+    /** Método para revisar si hay que revivir a algún fantasma.
+     * Pasos:
+     * - Primero se revisa que pacman deja de ser invencible o que la lista de los fantasmas comidos esté vacía.
+     * - Si no se da ninguna de las dos, recorremos el ArrayList de los fantasmas comidos.
+     * - Seleccionamos al fantasma y se calcula la diferencia entre el tiempo que hay de partida menos el momento en el que pacman deja de ser invencible.
+     * - Si el tiempo es mayor o igual a la duración que tiene ese fantasma para volver a hacer spawn, se le traslada al ArrayList de los fantasmas vivos y se le revive.
+     *
+     * @param tiempoTranscurrido Tiempo que ha pasado desde el inicio del juego.
+     * @see Fantasma#revivir() <-- Para ver como revivir al fantasma fantasma.
+     */
     private void revivirFantasmasComidos(int tiempoTranscurrido) {
         if (estado.pacmanInvencible() || fantasmasComidos.isEmpty()) return;
-        
 
         for (int fantasmaActual = 0 ; fantasmaActual < fantasmasComidos.size() ; fantasmaActual++) {
             Fantasma fantasmaComido = fantasmasComidos.get(fantasmaActual);
@@ -246,6 +315,13 @@ public class Nivel implements Dibujable {
     }
 
 
+    /** Método para que pacman se "coma" a fantasma
+     * Para no eliminar al objeto fantasma y luego crear otro nuevo, lo que se hace es que cuando pacman se come un fantasma, este es movido
+     * a otro ArrayList, para que no se le tenga en cuenta, pero el objeto sigue existiendo. El fantasma que ha sido comido libera su posición
+     * inicial y es trasladado al otro ArrayList
+     *
+     * @param fantasma Fantasma que ha sido comido.
+     */
     private void pacmanComeFantasma(Fantasma fantasma) {
         fantasma.liberarPosicion(fantasma.getPosicionInicial());
 
@@ -257,12 +333,21 @@ public class Nivel implements Dibujable {
         return fantasma.getPosicion().equals(pacman.getPosicion());
     }
 
+    /** Método para generar el power up.
+     * Pasos:
+     *  - Se establece en que momento de la partida se quiere que aparezca el power up.
+     *  - Cuando se llega a ese momento, se crea el power up posicionándose en el mapa, pero como el tiempo se repite varias veces por el Thread.sleep() del main, se posiciona varias veces a modo de "animación".
+     *  - Una vez se supera el momento de aparición, el power up se queda en una posición fija, eliminando el punto en el que está (en caso de estarlo), esperando a ser comido por pacman.
+     *
+     * @param nivelActual Nivel en el que estamos para establecer el momento de aparición.
+     * @param tiempoTranscurrido Tiempo que ha pasado desde el inicio del juego.
+     */
     private void generarPwrUp(int nivelActual, int tiempoTranscurrido) {
         int momentoAparicion;
 
-        if      (nivelActual == 1) momentoAparicion = 1; //20
-        else if (nivelActual == 2) momentoAparicion = 1; //15
-        else                       momentoAparicion = 1; //10
+        if      (nivelActual == 1) momentoAparicion = 20;
+        else if (nivelActual == 2) momentoAparicion = 15;
+        else                       momentoAparicion = 10;
 
         if (tiempoTranscurrido == momentoAparicion) { // "Animación de aparición"
             powerUp = new PowerUp(lienzo, this);

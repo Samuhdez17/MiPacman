@@ -88,7 +88,8 @@ public class Mapa implements Dibujable {
      * Este es usado por la clase Nivel, al establecerse el nivel en el que se va a jugar, se le indica al mapa para que sepa que imágenes usar.
      *
      * @param numMapa Número del mapa en el que se encuentra.
-     * @see Nivel#crearLaberinto(int)
+     * @see Nivel#crearMapa(int) Para ver donde se le llama a este método.
+     * @see Nivel#situarPersonajes(int) Para continuar la cadena si vienes de Nivel#cargarLaberinto().
      */
     public void asignarSprites(int numMapa) {
         switch (numMapa) {

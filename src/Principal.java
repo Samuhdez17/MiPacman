@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Principal {
-    private static final int TICK = 100; // 120 10000
+    private static final int TICK = 100;
     private static final int CAMBIO_NIVEL = 200;
 
     public static void espera(int milisegundos) {
